@@ -18,7 +18,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-class OrderRepo @Inject constructor(
+class OrderingUseCase @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     @CoroutinesScopesModule.ApplicationScope private val appCoroutineScope: CoroutineScope,
 ) : OrderingUseCase {

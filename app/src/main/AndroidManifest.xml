@@ -13,7 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AnimatedProductions">
         <activity
-            android:name="com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity"
+            android:name=".MovieDetails"
+            android:exported="true"
+            android:label="@string/title_activity_movie_details"
+            android:theme="@style/Theme.AnimatedProductions.NoActionBar" />
+        <activity
+            android:name=".screens.home.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.AnimatedProductions.NoActionBar">

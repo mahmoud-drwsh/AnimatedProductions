@@ -4,8 +4,11 @@ import android.content.res.Resources
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Service
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.DiscoverMoviesResponse
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.DiscoverTVResponse
+import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model.DiscoverMovieItemDto.Companion.toProduction
+import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model.DiscoverTVItemDto
+import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model.DiscoverTVItemDto.Companion.toProduction
+import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model.DiscoverTVResponse
+import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.ListMoviesAndShowsUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -19,23 +22,30 @@ class ListMoviesAndShowsRepo @Inject constructor(
     private val resources: Resources,
 ) : ListMoviesAndShowsUseCase {
 
-    override val moviesFlow: Flow<Resource<DiscoverMoviesResponse>> = flow {
+    override val moviesFlow: Flow<Resource<List<Production>>> = flow {
         emit(Resource.Loading)
 
-        emit(Resource.Success(service.getMovies()))
+        val data = service.getMovies().discoverMovieItemDtos.map { it.toProduction() }
+
+        emit(Resource.Success(data))
     }.catch { e ->
         emit(Resource.Error(e.message
             ?: resources.getString(R.string.unexpected_error_message)))
     }
 
-    override val showsFlow: Flow<Resource<DiscoverTVResponse>> = flow {
+    @Suppress("UselessCallOnNotNull")
+    override val showsFlow: Flow<Resource<List<Production>>> = flow {
         emit(Resource.Loading)
 
-        val shows = service.getShows()
+        val removeProductionsWithoutImages: (DiscoverTVItemDto) -> Boolean = {
+            it.posterPath.isNullOrBlank().not() && it.backdropPath.isNullOrBlank().not()
+        }
 
-        emit(Resource.Success(shows.copy(
-            discoverTVItems = shows.discoverTVItems.filter { it.posterPath != null }
-        )))
+        val shows = service.getShows().discoverTVItemDtos
+            .filter(removeProductionsWithoutImages)
+            .map { it.toProduction() }
+
+        emit(Resource.Success(shows))
     }.catch { e ->
         emit(Resource.Error(e.message
             ?: resources.getString(R.string.unexpected_error_message)))

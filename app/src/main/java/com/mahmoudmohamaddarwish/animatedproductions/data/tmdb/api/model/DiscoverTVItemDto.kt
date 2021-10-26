@@ -1,9 +1,10 @@
-package com.mahmoudmohamaddarwish.animatedproductions.domain.model
+package com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model
 
 
 import com.google.gson.annotations.SerializedName
+import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
 
-data class DiscoverTVItem(
+data class DiscoverTVItemDto(
     @SerializedName("backdrop_path")
     val backdropPath: String = "",
     @SerializedName("first_air_date")
@@ -30,4 +31,19 @@ data class DiscoverTVItem(
     val voteAverage: Double = 0.0,
     @SerializedName("vote_count")
     val voteCount: Int = 0,
-)
+) {
+    companion object {
+        fun DiscoverTVItemDto.toProduction(): Production = Production(
+            backdropPath = backdropPath,
+            firstAirDate = firstAirDate,
+            id = id,
+            name = name,
+            originalLanguage = originalLanguage,
+            overview = overview,
+            popularity = popularity,
+            posterPath = posterPath,
+            voteAverage = voteAverage,
+            voteCount = voteCount
+        )
+    }
+}

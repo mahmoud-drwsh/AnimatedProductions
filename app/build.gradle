@@ -130,3 +130,11 @@ dependencies {
     // ...with Kotlin.
     kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.39.1'
 }
+
+// Compose testing
+dependencies {
+    // Test rules and transitive dependencies:
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
+    // Needed for createComposeRule, but not createAndroidComposeRule:
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
+}

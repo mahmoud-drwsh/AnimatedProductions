@@ -6,12 +6,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.mahmoudmohamaddarwish.animatedproductions.data.datastore.dataStore
 import com.mahmoudmohamaddarwish.animatedproductions.data.repos.ListMoviesAndShowsRepo
-import com.mahmoudmohamaddarwish.animatedproductions.data.repos.OrderRepo
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Constants
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Service
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.okHttpClient
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.ListMoviesAndShowsUseCase
-import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderingUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,7 +48,7 @@ object AppHiltModule {
 
     @Singleton
     @Provides
-    fun provideOrderingUseCase(repo: OrderRepo): OrderingUseCase = repo
+    fun provideOrderingUseCase(repo: com.mahmoudmohamaddarwish.animatedproductions.data.repos.OrderingUseCase): com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderingUseCase = repo
 
     @Singleton
     @Provides

@@ -4,8 +4,8 @@ data class Order(
     val property: Property,
     val type: Type,
 ) {
-    enum class Type { ASCENDING, DESCENDING }
-    enum class Property { Name, RELEASE_DATE }
+    enum class Type(val label: String) { ASCENDING("Ascending"), DESCENDING("Descending") }
+    enum class Property(val label: String) { Name("Name"), RELEASE_DATE("Release Date") }
 
     companion object {
         val default = Order(Property.Name, Type.ASCENDING)

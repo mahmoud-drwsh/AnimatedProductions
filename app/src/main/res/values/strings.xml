@@ -4,4 +4,5 @@
     <string name="unable_to_open_webpage">Unable to open webpage</string>
     <string name="error_unable_to_share">Unable to share</string>
     <string name="unexpected_error_message">Unexpected error</string>
+    <string name="title_activity_movie_details">MovieDetails</string>
 </resources>

@@ -1,13 +1,13 @@
-package com.mahmoudmohamaddarwish.animatedproductions.domain.model
+package com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model
 
 
 import com.google.gson.annotations.SerializedName
 
-data class DiscoverMoviesResponse(
+data class DiscoverTVResponse(
     @SerializedName("page")
     val page: Int = 0,
     @SerializedName("results")
-    val discoverMovieItems: List<DiscoverMovieItem> = listOf(),
+    val discoverTVItemDtos: List<DiscoverTVItemDto> = listOf(),
     @SerializedName("total_pages")
     val totalPages: Int = 0,
     @SerializedName("total_results")

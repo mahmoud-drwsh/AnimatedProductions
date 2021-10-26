@@ -3,14 +3,9 @@ package com.mahmoudmohamaddarwish.animatedproductions;
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Service
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getImageUrl
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.dropWhile
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -40,12 +35,12 @@ class TMDBServiceTest {
     fun `ensure movies are returned by the service`() = runBlocking {
         val movies = service.getMovies()
 
-        movies.discoverMovieItems.forEach {
+        movies.discoverMovieItemDtos.forEach {
             println("${it.title} - ${getImageUrl(it.posterPath)}")
         }
 
-        assert(movies.discoverMovieItems.isNotEmpty())
-        assert(movies.discoverMovieItems.all { it.title.isNotBlank() })
+        assert(movies.discoverMovieItemDtos.isNotEmpty())
+        assert(movies.discoverMovieItemDtos.all { it.title.isNotBlank() })
     }
 
 
@@ -54,11 +49,11 @@ class TMDBServiceTest {
     fun `ensure shows are returned by the service`() = runBlocking {
         val movies = service.getShows()
 
-        movies.discoverTVItems.forEach {
+        movies.discoverTVItemDtos.forEach {
             println("${it.name} - ${getImageUrl(it.posterPath)}")
         }
 
-        assert(movies.discoverTVItems.isNotEmpty())
-        assert(movies.discoverTVItems.all { it.name.isNotBlank() })
+        assert(movies.discoverTVItemDtos.isNotEmpty())
+        assert(movies.discoverTVItemDtos.all { it.name.isNotBlank() })
     }
 }
