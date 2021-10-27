@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AnimatedProductions">
         <activity
-            android:name=".MovieDetails"
+            android:name=".screens.moviedetails.ProductionDetailsActivity"
             android:exported="true"
             android:label="@string/title_activity_movie_details"
             android:theme="@style/Theme.AnimatedProductions.NoActionBar" />

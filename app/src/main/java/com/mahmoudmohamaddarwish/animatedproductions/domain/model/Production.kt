@@ -1,5 +1,9 @@
 package com.mahmoudmohamaddarwish.animatedproductions.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Production(
     val backdropPath: String = "",
     val firstAirDate: String = "",
@@ -11,4 +15,4 @@ data class Production(
     val posterPath: String = "",
     val voteAverage: Double = 0.0,
     val voteCount: Int = 0,
-)
+) : Parcelable

@@ -2,7 +2,6 @@ package com.mahmoudmohamaddarwish.animatedproductions;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.data.repos.ListMoviesAndShowsRepo
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getImageUrl
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi

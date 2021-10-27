@@ -3,6 +3,7 @@ package com.mahmoudmohamaddarwish.animatedproductions.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
@@ -30,14 +31,14 @@ fun CoilImage(url: String, imageDescription: String, modifier: Modifier = Modifi
 
     if (isImageNotReady(painter)) {
         // show a loading indicator while the image is being loaded
-        CircularProgressIndicator(modifier.size(32.dp))
+        CircularProgressIndicator(modifier
+            .size(32.dp)
+            .wrapContentSize())
     } else {
         Surface(modifier.shadow(4.dp, RoundedCornerShape(4.dp))) {
             Image(
                 painter = painter,
                 contentDescription = imageDescription,
-                modifier = Modifier
-                    .fillMaxHeight(),
                 contentScale = ContentScale.FillWidth
             )
         }

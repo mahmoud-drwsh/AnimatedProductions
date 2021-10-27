@@ -1,0 +1,21 @@
+package com.mahmoudmohamaddarwish.animatedproductions.ui.theme
+
+import androidx.compose.ui.unit.dp
+
+val BACKDROP_HEIGHT = 220.dp
+
+val POSTER_IMAGE_HEIGHT = 285.dp
+
+val PRODUCTION_POSTER_IMAGE_PADDING = 4.dp
+
+val SORT_MENU_OPTION_HEIGHT = 56.dp
+
+val SORT_MENU_OPTION_HORIZONTAL_PADDING = 16.dp
+
+val SORT_MENU_OPTION_TEXT_START_PADDING = 16.dp
+
+val PRODUCTIONS_GRID_CONTENT_PADDING = 4.dp
+
+val DETAILS_CARD_COLUMN_SPACED_BY = 8.dp
+
+val DETAILS_CARD_HORIZONTAL_PADDING = 8.dp

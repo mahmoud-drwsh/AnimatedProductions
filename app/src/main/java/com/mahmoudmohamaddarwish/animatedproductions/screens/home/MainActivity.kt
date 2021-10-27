@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -17,24 +18,28 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
+import com.mahmoudmohamaddarwish.animatedproductions.App
+import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getImageUrl
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderingUseCase
+import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.ProductionDetailsActivity.Companion.navigateToDetails
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredLoadingMessageWithIndicator
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredText
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CoilImage
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.AnimatedProductionsTheme
+import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -53,7 +58,6 @@ class MainActivity : ComponentActivity() {
         object Movies : Tab("Movies")
         object Shows : Tab("TV Shows")
     }
-
 }
 
 
@@ -67,10 +71,11 @@ fun HomeScreen(viewModel: HomeViewModel) {
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(text = "Popular Movies & Shows", Modifier.fillMaxWidth())
+                        Text(text = stringResource(R.string.home_screen_title),
+                            Modifier.fillMaxWidth())
                     },
                     actions = {
-                        DropDownMenu(viewModel.orderingUseCase)
+                        SortDialog(viewModel.orderingUseCase)
                     }
                 )
             }
@@ -84,13 +89,14 @@ fun HomeScreen(viewModel: HomeViewModel) {
 
 
 @Composable
-fun DropDownMenu(repo: OrderingUseCase) {
+fun SortDialog(repo: OrderingUseCase) {
     var shown by remember { mutableStateOf(false) }
 
     val order by repo.order.collectAsState(initial = Order.default)
 
     IconButton(onClick = { shown = true }) {
-        Icon(Icons.Default.Sort, contentDescription = "Localized description")
+        Icon(Icons.Default.Sort,
+            contentDescription = stringResource(R.string.sort_productions_icon_description))
     }
 
     if (shown)
@@ -98,6 +104,7 @@ fun DropDownMenu(repo: OrderingUseCase) {
             Card {
                 val propertyRadioOptions: List<Order.Property> = listOf(Order.Property.Name,
                     Order.Property.RELEASE_DATE)
+
                 val typeRadioOptions: List<Order.Type> = listOf(Order.Type.ASCENDING,
                     Order.Type.DESCENDING)
 
@@ -106,7 +113,7 @@ fun DropDownMenu(repo: OrderingUseCase) {
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .height(56.dp)
+                                .height(SORT_MENU_OPTION_HEIGHT)
                                 .selectable(
                                     selected = (orderProperty == order.property),
                                     onClick = {
@@ -115,7 +122,7 @@ fun DropDownMenu(repo: OrderingUseCase) {
                                     },
                                     role = Role.RadioButton
                                 )
-                                .padding(horizontal = 16.dp),
+                                .padding(horizontal = SORT_MENU_OPTION_HORIZONTAL_PADDING),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(
@@ -125,7 +132,7 @@ fun DropDownMenu(repo: OrderingUseCase) {
                             Text(
                                 text = orderProperty.label,
                                 style = MaterialTheme.typography.body1.merge(),
-                                modifier = Modifier.padding(start = 16.dp)
+                                modifier = Modifier.padding(start = SORT_MENU_OPTION_HORIZONTAL_PADDING)
                             )
                         }
                     }
@@ -136,7 +143,7 @@ fun DropDownMenu(repo: OrderingUseCase) {
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .height(56.dp)
+                                .height(SORT_MENU_OPTION_HEIGHT)
                                 .selectable(
                                     selected = (orderProperty == order.type),
                                     onClick = {
@@ -145,7 +152,7 @@ fun DropDownMenu(repo: OrderingUseCase) {
                                     },
                                     role = Role.RadioButton
                                 )
-                                .padding(horizontal = 16.dp),
+                                .padding(horizontal = SORT_MENU_OPTION_HORIZONTAL_PADDING),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(
@@ -155,7 +162,7 @@ fun DropDownMenu(repo: OrderingUseCase) {
                             Text(
                                 text = orderProperty.label,
                                 style = MaterialTheme.typography.body1.merge(),
-                                modifier = Modifier.padding(start = 16.dp)
+                                modifier = Modifier.padding(start = SORT_MENU_OPTION_TEXT_START_PADDING)
                             )
                         }
                     }
@@ -164,7 +171,6 @@ fun DropDownMenu(repo: OrderingUseCase) {
         }
 
 }
-
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -175,7 +181,7 @@ fun HomeScreenTabLayout(
     val rememberCoroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
 
-    val tabs = listOf(MainActivity.Tab.Movies, MainActivity.Tab.Shows)
+    var tabs = listOf(MainActivity.Tab.Movies, MainActivity.Tab.Shows)
 
     Column(Modifier.fillMaxSize()) {
         TabRow(
@@ -213,48 +219,47 @@ fun HomeScreenTabLayout(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun MoviesTabContent(resource: Resource<List<Production>>) {
-    when (resource) {
-        is Resource.Error -> {
-            CenteredText(text = resource.message)
-        }
-        is Resource.Loading -> CenteredLoadingMessageWithIndicator()
-        is Resource.Success -> LazyVerticalGrid(
-            cells = GridCells.Fixed(2),
-            contentPadding = PaddingValues(4.dp),
-        ) {
-            items(resource.data) {
-                CoilImage(url = getImageUrl(it.posterPath),
-                    imageDescription = "",
-                    modifier = Modifier.padding(4.dp))
-            }
-        }
 
-    }
+@Composable
+fun MoviesTabContent(resource: Resource<List<Production>>) = when (resource) {
+    is Resource.Error -> CenteredText(text = resource.message)
+    is Resource.Loading -> CenteredLoadingMessageWithIndicator()
+    is Resource.Success -> ProductionsGridList(resource = resource)
 }
 
+
+@Composable
+fun ShowsTabContent(resource: Resource<List<Production>>) = when (resource) {
+    is Resource.Error -> CenteredText(text = resource.message)
+    is Resource.Loading -> CenteredLoadingMessageWithIndicator()
+    is Resource.Success -> ProductionsGridList(resource)
+}
+
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ShowsTabContent(resource: Resource<List<Production>>) {
-    when (resource) {
-        is Resource.Error -> {
-            CenteredText(text = resource.message)
-        }
+private fun ProductionsGridList(resource: Resource.Success<List<Production>>) {
+    val context = LocalContext.current
 
-        is Resource.Loading -> CenteredLoadingMessageWithIndicator()
-
-        is Resource.Success -> LazyVerticalGrid(
-            cells = GridCells.Fixed(2),
-            contentPadding = PaddingValues(4.dp),
-        ) {
-            items(resource.data) {
-                CoilImage(url = getImageUrl(it.posterPath),
-                    imageDescription = "",
-                    modifier = Modifier.padding(4.dp))
+    LazyVerticalGrid(
+        cells = GridCells.Fixed(PRODUCTIONS_GRID_CELLS_NUMBER),
+        contentPadding = PaddingValues(PRODUCTIONS_GRID_CONTENT_PADDING),
+    ) {
+        items(resource.data) { production ->
+            Box(
+                contentAlignment = Alignment.Center
+            ) {
+                CoilImage(url = production.posterPath,
+                    imageDescription = stringResource(R.string.poster_image_description),
+                    modifier = Modifier
+                        .padding(PRODUCTION_POSTER_IMAGE_PADDING)
+                        .height(POSTER_IMAGE_HEIGHT)
+                        .fillMaxWidth()
+                        .clickable {
+                            context.navigateToDetails(production)
+                        })
             }
-        }
 
+        }
     }
 }

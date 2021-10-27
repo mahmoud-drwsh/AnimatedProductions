@@ -5,4 +5,9 @@
     <string name="error_unable_to_share">Unable to share</string>
     <string name="unexpected_error_message">Unexpected error</string>
     <string name="title_activity_movie_details">MovieDetails</string>
+    <string name="home_screen_title"><![CDATA[Popular Movies & Shows]]></string>
+    <string name="movies_tab_label">Movies</string>
+    <string name="shows_tab_label">TV Shows</string>
+    <string name="sort_productions_icon_description">Sort productions icon</string>
+    <string name="poster_image_description">production poster image</string>
 </resources>

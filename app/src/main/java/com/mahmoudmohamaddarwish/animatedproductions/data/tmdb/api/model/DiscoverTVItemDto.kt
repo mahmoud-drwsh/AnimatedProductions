@@ -2,6 +2,8 @@ package com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model
 
 
 import com.google.gson.annotations.SerializedName
+import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getBackdropImageUrl
+import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getPosterImageUrl
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
 
 data class DiscoverTVItemDto(
@@ -34,14 +36,14 @@ data class DiscoverTVItemDto(
 ) {
     companion object {
         fun DiscoverTVItemDto.toProduction(): Production = Production(
-            backdropPath = backdropPath,
+            backdropPath = getBackdropImageUrl(backdropPath),
             firstAirDate = firstAirDate,
             id = id,
             name = name,
             originalLanguage = originalLanguage,
             overview = overview,
             popularity = popularity,
-            posterPath = posterPath,
+            posterPath = getPosterImageUrl(posterPath),
             voteAverage = voteAverage,
             voteCount = voteCount
         )

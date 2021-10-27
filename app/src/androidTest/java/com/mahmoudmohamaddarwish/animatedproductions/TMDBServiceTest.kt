@@ -2,7 +2,7 @@ package com.mahmoudmohamaddarwish.animatedproductions;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Service
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getImageUrl
+import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getPosterImageUrl
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,7 +36,7 @@ class TMDBServiceTest {
         val movies = service.getMovies()
 
         movies.discoverMovieItemDtos.forEach {
-            println("${it.title} - ${getImageUrl(it.posterPath)}")
+            println("${it.title} - ${getPosterImageUrl(it.posterPath)}")
         }
 
         assert(movies.discoverMovieItemDtos.isNotEmpty())
@@ -50,7 +50,7 @@ class TMDBServiceTest {
         val movies = service.getShows()
 
         movies.discoverTVItemDtos.forEach {
-            println("${it.name} - ${getImageUrl(it.posterPath)}")
+            println("${it.name} - ${getPosterImageUrl(it.posterPath)}")
         }
 
         assert(movies.discoverTVItemDtos.isNotEmpty())
