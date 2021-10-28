@@ -4,22 +4,20 @@ import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Constants.API
 import okhttp3.Interceptor
 
 /**
- * This interceptor is used to add the authentication header for every request
+ * This interceptor is used to add the authentication key for every request
  * */
-internal val AuthenticationHeaderAddingInterceptor = Interceptor { chain ->
-    val httpUrl = chain
+internal val AuthenticationAPIKeyAddingInterceptor = Interceptor { chain ->
+    val newHttpUrl = chain
         .request()
         .url()
         .newBuilder()
         .addQueryParameter("api_key", API_KEY)
         .build()
 
-    println(httpUrl.uri().toString())
-
     val request = chain
         .request()
         .newBuilder()
-        .url(httpUrl)
+        .url(newHttpUrl)
         .build()
 
     chain.proceed(request)

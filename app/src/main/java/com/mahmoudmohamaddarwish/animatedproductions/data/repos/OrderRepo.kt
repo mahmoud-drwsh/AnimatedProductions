@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.edit
 import com.mahmoudmohamaddarwish.animatedproductions.di.CoroutinesScopesModule
 import com.mahmoudmohamaddarwish.animatedproductions.data.datastore.Constants
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
-import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderingUseCase
+import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -18,10 +18,10 @@ import javax.inject.Singleton
 
 
 @Singleton
-class OrderingUseCase @Inject constructor(
+class OrderRepo @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     @CoroutinesScopesModule.ApplicationScope private val appCoroutineScope: CoroutineScope,
-) : OrderingUseCase {
+) : OrderUseCase {
 
     override val order: Flow<Order> = dataStore.data.map { preferences ->
         val propertyName = preferences[Constants.orderPropertyNameKey] ?: Order.defaultProperty.name
@@ -33,7 +33,7 @@ class OrderingUseCase @Inject constructor(
         Order.default
     }
 
-    override fun setOrderProperty(propertyName: Order.Property) {
+    override fun setSortProperty(propertyName: Order.Property) {
         appCoroutineScope.launch {
             dataStore.edit { preferences: MutablePreferences ->
                 preferences[Constants.orderPropertyNameKey] = propertyName.name
@@ -41,7 +41,7 @@ class OrderingUseCase @Inject constructor(
         }
     }
 
-    override fun setOrderType(type: Order.Type) {
+    override fun setSortType(type: Order.Type) {
         appCoroutineScope.launch {
             dataStore.edit { preferences: MutablePreferences ->
                 preferences[Constants.orderTypeKey] = type.name

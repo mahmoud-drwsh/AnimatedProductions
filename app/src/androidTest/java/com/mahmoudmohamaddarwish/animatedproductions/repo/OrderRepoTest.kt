@@ -1,8 +1,8 @@
-package com.mahmoudmohamaddarwish.animatedproductions;
+package com.mahmoudmohamaddarwish.animatedproductions.repo
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
-import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderingUseCase
+import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderUseCase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,13 +18,13 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class OrderingUseCaseTest {
+class OrderRepoTest {
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
     @Inject
-    lateinit var orderingUseCase: OrderingUseCase
+    lateinit var orderUseCase: OrderUseCase
 
     @Before
     fun setup() {
@@ -51,12 +51,12 @@ class OrderingUseCaseTest {
     private fun testInsertion(order: Order) {
         runBlocking {
             // insert the order object
-            orderingUseCase.setOrderProperty(order.property)
-            orderingUseCase.setOrderType(order.type)
+            orderUseCase.setSortProperty(order.property)
+            orderUseCase.setSortType(order.type)
             // wait to ensure that it has been saved
             delay(500L)
             // getting the first emitted value after the insertion
-            val first = orderingUseCase.order.first()
+            val first = orderUseCase.order.first()
             // making sure it is equal to the one inserted
             assert(first == order) {
                 "Expected: $order, found: $first"

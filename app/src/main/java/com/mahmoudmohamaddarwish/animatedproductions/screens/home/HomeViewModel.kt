@@ -2,67 +2,32 @@ package com.mahmoudmohamaddarwish.animatedproductions.screens.home
 
 import androidx.lifecycle.ViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model.DiscoverMovieItemDto
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model.DiscoverMoviesResponse
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model.DiscoverTVItemDto
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model.DiscoverTVResponse
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.*
-import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.ListMoviesAndShowsUseCase
-import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderingUseCase
+import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
+import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
+import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderUseCase
+import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderedMoviesAndShowsListsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    public val orderingUseCase: OrderingUseCase,
-    moviesAndShowsUseCase: ListMoviesAndShowsUseCase,
+    private val orderUseCase: OrderUseCase,
+    orderedMoviesAndShowsListsUseCase: OrderedMoviesAndShowsListsUseCase,
 ) : ViewModel() {
 
-    val moviesFlow =
-        orderingUseCase
-            .order
-            .combine(moviesAndShowsUseCase.moviesFlow) { order, resource ->
-                if (resource is Resource.Success) {
-                    val newData =
-                        resource.sortProductions(order)
+    val orderedMoviesFlow: Flow<Resource<List<Production>>> =
+        orderedMoviesAndShowsListsUseCase.orderedMoviesFlow
 
-                    Resource.Success(data = newData)
-                } else {
-                    resource
-                }
-            }
+    val orderedShowsFlow: Flow<Resource<List<Production>>> =
+        orderedMoviesAndShowsListsUseCase.orderedShowsFlow
 
+    val order: Flow<Order> = orderUseCase.order
 
-    val showsFlow =
-        orderingUseCase
-            .order
-            .combine(moviesAndShowsUseCase.showsFlow) { order, resource ->
-                if (resource is Resource.Success) {
-                    val newData = resource.sortProductions(order)
+    fun setSortProperty(propertyName: Order.Property) =
+        orderUseCase.setSortProperty(propertyName)
 
-                    Resource.Success(data = newData)
-                } else {
-                    resource
-                }
-            }
+    fun setSortType(type: Order.Type) =
+        orderUseCase.setSortType(type)
 
-    private fun Resource.Success<List<Production>>.sortProductions(
-        order: Order,
-    ): List<Production> {
-        return data.sortList(order) {
-            when (order.property) {
-                Order.Property.Name -> it.name
-                Order.Property.RELEASE_DATE -> it.firstAirDate
-            }
-        }
-    }
-
-    private fun <T, R : Comparable<R>> List<T>.sortList(order: Order, selector: (T) -> R): List<T> {
-        return when (order.type) {
-            Order.Type.ASCENDING -> sortedBy(selector)
-            Order.Type.DESCENDING -> sortedByDescending(selector)
-        }
-    }
 }

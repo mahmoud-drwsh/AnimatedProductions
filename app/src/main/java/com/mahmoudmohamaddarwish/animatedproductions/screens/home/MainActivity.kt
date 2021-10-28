@@ -19,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.window.Dialog
@@ -26,12 +27,16 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
-import com.mahmoudmohamaddarwish.animatedproductions.App
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
-import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderingUseCase
+import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MOVIES_LIST_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MOVIES_LOADING_INDICATOR_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.SHOWS_LIST_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.SHOWS_LOADING_INDICATOR_TEST_TAG
 import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.ProductionDetailsActivity.Companion.navigateToDetails
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredLoadingMessageWithIndicator
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredText
@@ -54,17 +59,31 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    sealed class Tab(val label: String) {
-        object Movies : Tab("Movies")
-        object Shows : Tab("TV Shows")
+    sealed class Tab {
+        object Movies : Tab()
+        object Shows : Tab()
+    }
+
+    companion object {
+        const val MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG = "movies_and_shows_tag"
+
+        const val MOVIES_LIST_TEST_TAG = "movies list test tag"
+
+        const val SHOWS_LIST_TEST_TAG = "shows_list_test_tag"
+
+        const val MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG = "main activity poster image test tag"
+
+        const val SHOWS_LOADING_INDICATOR_TEST_TAG = "shows loading indicator test tag"
+
+        const val MOVIES_LOADING_INDICATOR_TEST_TAG = "movies loading indicator test tag"
     }
 }
 
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
-    val moviesFlow by viewModel.moviesFlow.collectAsState(initial = Resource.Loading)
-    val showsFlow by viewModel.showsFlow.collectAsState(initial = Resource.Loading)
+    val moviesResource by viewModel.orderedMoviesFlow.collectAsState(initial = Resource.Loading)
+    val showsResource by viewModel.orderedShowsFlow.collectAsState(initial = Resource.Loading)
 
     AnimatedProductionsTheme {
         Scaffold(
@@ -75,13 +94,13 @@ fun HomeScreen(viewModel: HomeViewModel) {
                             Modifier.fillMaxWidth())
                     },
                     actions = {
-                        SortDialog(viewModel.orderingUseCase)
+                        SortDialog(viewModel)
                     }
                 )
             }
         ) {
             Box(Modifier.padding(it)) {
-                HomeScreenTabLayout(moviesFlow, showsFlow)
+                HomeScreenTabLayout(moviesResource, showsResource)
             }
         }
     }
@@ -89,10 +108,10 @@ fun HomeScreen(viewModel: HomeViewModel) {
 
 
 @Composable
-fun SortDialog(repo: OrderingUseCase) {
+fun SortDialog(viewModel: HomeViewModel) {
     var shown by remember { mutableStateOf(false) }
 
-    val order by repo.order.collectAsState(initial = Order.default)
+    val order by viewModel.order.collectAsState(initial = Order.default)
 
     IconButton(onClick = { shown = true }) {
         Icon(Icons.Default.Sort,
@@ -117,7 +136,7 @@ fun SortDialog(repo: OrderingUseCase) {
                                 .selectable(
                                     selected = (orderProperty == order.property),
                                     onClick = {
-                                        repo.setOrderProperty(orderProperty)
+                                        viewModel.setSortProperty(orderProperty)
                                         shown = false
                                     },
                                     role = Role.RadioButton
@@ -147,7 +166,7 @@ fun SortDialog(repo: OrderingUseCase) {
                                 .selectable(
                                     selected = (orderProperty == order.type),
                                     onClick = {
-                                        repo.setOrderType(orderProperty)
+                                        viewModel.setSortType(orderProperty)
                                         shown = false
                                     },
                                     role = Role.RadioButton
@@ -181,9 +200,11 @@ fun HomeScreenTabLayout(
     val rememberCoroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
 
-    var tabs = listOf(MainActivity.Tab.Movies, MainActivity.Tab.Shows)
+    val tabs = listOf(MainActivity.Tab.Movies, MainActivity.Tab.Shows)
 
-    Column(Modifier.fillMaxSize()) {
+    Column(Modifier
+        .fillMaxSize()
+        .testTag(MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG)) {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
             indicator = { tabPositions ->
@@ -194,7 +215,7 @@ fun HomeScreenTabLayout(
         ) {
             tabs.forEachIndexed { index, tab ->
                 Tab(
-                    text = { Text(tab.label) },
+                    text = { Text(getLabelForTab(tab)) },
                     selected = pagerState.currentPage == index,
                     onClick = {
                         rememberCoroutineScope.launch {
@@ -219,47 +240,55 @@ fun HomeScreenTabLayout(
     }
 }
 
+@Composable
+fun getLabelForTab(tab: MainActivity.Tab): String = when (tab) {
+    MainActivity.Tab.Movies -> stringResource(id = R.string.movies_tab_label)
+    MainActivity.Tab.Shows -> stringResource(id = R.string.shows_tab_label)
+}
 
 @Composable
 fun MoviesTabContent(resource: Resource<List<Production>>) = when (resource) {
     is Resource.Error -> CenteredText(text = resource.message)
-    is Resource.Loading -> CenteredLoadingMessageWithIndicator()
-    is Resource.Success -> ProductionsGridList(resource = resource)
+    is Resource.Loading -> CenteredLoadingMessageWithIndicator(Modifier.testTag(
+        MOVIES_LOADING_INDICATOR_TEST_TAG))
+    is Resource.Success -> ProductionsGridList(resource = resource,
+        testTag = MOVIES_LIST_TEST_TAG)
 }
-
 
 @Composable
 fun ShowsTabContent(resource: Resource<List<Production>>) = when (resource) {
     is Resource.Error -> CenteredText(text = resource.message)
-    is Resource.Loading -> CenteredLoadingMessageWithIndicator()
-    is Resource.Success -> ProductionsGridList(resource)
+    is Resource.Loading -> CenteredLoadingMessageWithIndicator(Modifier.testTag(
+        SHOWS_LOADING_INDICATOR_TEST_TAG))
+    is Resource.Success -> ProductionsGridList(resource,
+        SHOWS_LIST_TEST_TAG)
 }
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ProductionsGridList(resource: Resource.Success<List<Production>>) {
+private fun ProductionsGridList(resource: Resource.Success<List<Production>>, testTag: String) {
     val context = LocalContext.current
 
     LazyVerticalGrid(
         cells = GridCells.Fixed(PRODUCTIONS_GRID_CELLS_NUMBER),
         contentPadding = PaddingValues(PRODUCTIONS_GRID_CONTENT_PADDING),
+        modifier = Modifier.testTag(testTag)
     ) {
         items(resource.data) { production ->
             Box(
                 contentAlignment = Alignment.Center
             ) {
-                CoilImage(url = production.posterPath,
+                CoilImage(
+                    url = production.posterPath,
                     imageDescription = stringResource(R.string.poster_image_description),
                     modifier = Modifier
                         .padding(PRODUCTION_POSTER_IMAGE_PADDING)
                         .height(POSTER_IMAGE_HEIGHT)
                         .fillMaxWidth()
-                        .clickable {
-                            context.navigateToDetails(production)
-                        })
+                        .clickable { context.navigateToDetails(production) }
+                        .testTag(MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG))
             }
-
         }
     }
 }
+

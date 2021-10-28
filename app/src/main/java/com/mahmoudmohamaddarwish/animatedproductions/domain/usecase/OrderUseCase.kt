@@ -3,9 +3,9 @@ package com.mahmoudmohamaddarwish.animatedproductions.domain.usecase
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
 import kotlinx.coroutines.flow.Flow
 
-interface OrderingUseCase {
+interface OrderUseCase {
     val order: Flow<Order>
 
-    fun setOrderProperty(propertyName: Order.Property)
-    fun setOrderType(type: Order.Type)
+    fun setSortProperty(propertyName: Order.Property)
+    fun setSortType(type: Order.Type)
 }

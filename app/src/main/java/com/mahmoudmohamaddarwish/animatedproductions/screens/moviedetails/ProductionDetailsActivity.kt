@@ -3,49 +3,55 @@ package com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mahmoudmohamaddarwish.animatedproductions.R
+import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
+import com.mahmoudmohamaddarwish.animatedproductions.navigateUp
+import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.ProductionDetailsActivity.Companion.BACKDROP_IMAGE_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.ProductionDetailsActivity.Companion.DETAILS_POSTER_IMAGE_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredLoadingMessageWithIndicator
+import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredText
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CoilImage
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.AnimatedProductionsTheme
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.BACKDROP_HEIGHT
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.DETAILS_CARD_COLUMN_SPACED_BY
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.DETAILS_CARD_HORIZONTAL_PADDING
-
-private const val TAG = "ProductionDetailsActivi"
+import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.*
 
 class ProductionDetailsActivity : ComponentActivity() {
+
+    private val viewModel by viewModels<ProductionDetailsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val productionObject = getProductionObject()
-
-        Log.e(TAG, "onCreate: $productionObject")
+        viewModel.loadProductionObject(getProductionObject())
 
         setContent {
-            DetailsScreen(productionObject)
+            val state by viewModel.productionObject.collectAsState(initial = Resource.Loading)
+
+            AnimatedProductionsTheme {
+                DetailsScreen(state) {
+                    navigateUp()
+                }
+            }
         }
     }
 
@@ -56,70 +62,130 @@ class ProductionDetailsActivity : ComponentActivity() {
             Intent(this, ProductionDetailsActivity::class.java)
                 .apply { putExtra(PRODUCTION_INTENT_KEY, production) }
 
-        fun Context.navigateToDetails(production: Production) {
-            val intent = newIntentWithExtra(production)
-            startActivity(intent)
-        }
+        fun Context.navigateToDetails(production: Production) =
+            startActivity(newIntentWithExtra(production))
 
-        internal fun ProductionDetailsActivity.getProductionObject(): Production =
-            intent.getParcelableExtra<Production>(PRODUCTION_INTENT_KEY) as Production
+        internal fun ProductionDetailsActivity.getProductionObject(): Production? =
+            intent.getParcelableExtra(PRODUCTION_INTENT_KEY)
+
+        const val BACKDROP_IMAGE_TEST_TAG = "details_backdrop_image_test_tag"
+
+        const val DETAILS_POSTER_IMAGE_TEST_TAG = "details_poster_image_test_tag"
     }
-
 }
 
 @Composable
-fun DetailsScreen(productionObject: Production) {
-    AnimatedProductionsTheme {
-        val state = rememberScrollState()
+fun DetailsScreen(detailsUIState: Resource<Production>, navigateBack: () -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(R.string.production_details)) },
+                navigationIcon = {
+                    IconButton(onClick = { navigateBack() }) {
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = stringResource(R.string.navigate_back_button_desc)
+                        )
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
+        Box(
+            Modifier.padding(paddingValues)
+        ) {
+            when (detailsUIState) {
+                is Resource.Error -> CenteredText(text = detailsUIState.message)
+                is Resource.Loading -> CenteredLoadingMessageWithIndicator()
+                is Resource.Success -> ProductionDetailsContent(detailsUIState.data)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProductionDetailsContent(detailsUIState: Production) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = spacedBy(DETAILS_CARD_COLUMN_SPACED_BY),
+    ) {
+        CoilImage(url = detailsUIState.backdropPath,
+            imageDescription = stringResource(R.string.backdrop_image_description),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(BACKDROP_HEIGHT)
+                .testTag(BACKDROP_IMAGE_TEST_TAG))
 
         Column(
             Modifier
                 .fillMaxSize()
-                .verticalScroll(state),
-            verticalArrangement = spacedBy(DETAILS_CARD_COLUMN_SPACED_BY),
+                .padding(DETAILS_CONTENT_LOWER_PART_PADDING),
+            verticalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_COLUMN_SPACE_BY),
         ) {
-            CoilImage(url = productionObject.backdropPath,
-                imageDescription = "",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(BACKDROP_HEIGHT))
-
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                verticalArrangement = spacedBy(16.dp),
+            Row(
+                horizontalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_PADDING),
             ) {
-                Row(
-                    horizontalArrangement = spacedBy(8.dp),
+                CoilImage(
+                    url = detailsUIState.posterPath,
+                    imageDescription = stringResource(R.string.poster_image_description),
+                    Modifier
+                        .width(128.dp)
+                        .testTag(DETAILS_POSTER_IMAGE_TEST_TAG)
+                )
+
+                Column(
+                    verticalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_PADDING),
                 ) {
-                    CoilImage(
-                        url = productionObject.posterPath, imageDescription = "",
-                        Modifier.width(128.dp)
-                    )
+                    Text(text = detailsUIState.name, style = MaterialTheme.typography.h5)
 
-                    Column(
-                        verticalArrangement = spacedBy(8.dp),
+                    Text(text = detailsUIState.firstAirDate,
+                        style = MaterialTheme.typography.subtitle1)
+
+
+                }
+            }
+
+            Text(text = detailsUIState.overview, style = MaterialTheme.typography.body1)
+
+            Divider(Modifier.fillMaxWidth())
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = spacedBy(DETAILS_TEXT_AND_ICON_SPACE_BY),
                     ) {
-                        Text(text = productionObject.name, style = MaterialTheme.typography.h5)
-
-                        Text(text = productionObject.firstAirDate,
-                            style = MaterialTheme.typography.subtitle1)
-
-
+                        Text(text = detailsUIState.voteAverage.toString())
+                        Icon(Icons.Default.Star,
+                            contentDescription = stringResource(R.string.vote_average_star_icon_desc))
                     }
+                    Text(
+                        text = stringResource(id = R.string.votes_with_number,
+                            detailsUIState.voteCount)
+                    )
                 }
 
-                Text(text = productionObject.overview, style= MaterialTheme.typography.body1)
-
-                Divider(Modifier.fillMaxWidth())
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = spacedBy(DETAILS_TEXT_AND_ICON_SPACE_BY),
+                    ) {
+                        Text(text = detailsUIState.originalLanguage.uppercase())
+                        Icon(Icons.Default.Language,
+                            contentDescription = stringResource(R.string.production_language_icon_desc))
+                    }
+                    Text(text = stringResource(R.string.original_language))
+                }
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = productionObject.voteAverage.toString())
-                        Icon(Icons.Default.Star, contentDescription = "")
-                    }
-                    Text(text = "${productionObject.voteCount} votes")
+                    Text(text = detailsUIState.popularity.toString())
+                    Text(text = stringResource(R.string.popularity))
                 }
             }
         }
@@ -129,17 +195,17 @@ fun DetailsScreen(productionObject: Production) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewDetails() {
-    val productionObject =
-        Production(backdropPath = "https://image.tmdb.org/t/p/w780//hwwFyowfcbLRVmRBOkvnABBNIOs.jpg",
-            firstAirDate = "1998-11-25",
-            id = 9487,
-            name = """A Bug's Life""",
-            originalLanguage = "en",
-            overview = """On behalf of "oppressed bugs everywhere," an inventive ant named Flik hires a troupe of warrior bugs to defend his bustling colony from a horde of freeloading grasshoppers led by the evil-minded Hopper.""",
-            popularity = 67.211,
-            posterPath = "https://image.tmdb.org/t/p/w500//hFamOus53922agTlKxhcL7ngJ9h.jpg",
-            voteAverage = 7.0,
-            voteCount = 7252)
+    DetailsScreen(detailsUIState = Resource.Success(Production.dummy)) {}
+}
 
-    DetailsScreen(productionObject = productionObject)
+@Preview(showBackground = true)
+@Composable
+fun PreviewDetailsLoading() {
+    DetailsScreen(detailsUIState = Resource.Loading) {}
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewDetailsError() {
+    DetailsScreen(detailsUIState = Resource.Error("TEST_ERROR_MESSAGE")) {}
 }

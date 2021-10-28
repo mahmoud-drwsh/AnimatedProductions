@@ -1,2 +1,2 @@
 todo
-1. work on the details screen
+1. continue the work on the details screen

@@ -1,13 +1,11 @@
-package com.mahmoudmohamaddarwish.animatedproductions;
+package com.mahmoudmohamaddarwish.animatedproductions.repo
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.mahmoudmohamaddarwish.animatedproductions.data.repos.ListMoviesAndShowsRepo
+import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Service
+import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getPosterImageUrl
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -18,13 +16,13 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class TMDBRepoTest {
+class TMDBServiceTest {
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
     @Inject
-    lateinit var listMoviesAndShowsRepo: ListMoviesAndShowsRepo
+    lateinit var service: Service
 
     @Before
     fun setup() {
@@ -35,25 +33,19 @@ class TMDBRepoTest {
     @Suppress("IllegalIdentifier")
     @Test
     fun `ensure movies are returned by the service`() = runBlocking {
-        val moviesFlow = listMoviesAndShowsRepo.moviesFlow
+        val movies = service.getMovies()
 
-        val resource = moviesFlow.take(1).first()
-
-        assert(resource == Resource.Loading)
-
-        assert(moviesFlow.drop(1).first() is Resource.Success)
+        assert(movies.discoverMovieItemDtos.isNotEmpty())
+        assert(movies.discoverMovieItemDtos.all { it.title.isNotBlank() })
     }
 
 
     @Suppress("IllegalIdentifier")
     @Test
     fun `ensure shows are returned by the service`() = runBlocking {
-        val showsFlow = listMoviesAndShowsRepo.showsFlow
+        val movies = service.getShows()
 
-        val movies = showsFlow.take(1).first()
-
-        assert(movies == Resource.Loading)
-
-        assert(showsFlow.drop(1).first() is Resource.Success)
+        assert(movies.discoverTVItemDtos.isNotEmpty())
+        assert(movies.discoverTVItemDtos.all { it.name.isNotBlank() })
     }
 }

@@ -7,18 +7,12 @@ import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getPosterImag
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
 
 data class DiscoverMovieItemDto(
-    @SerializedName("adult")
-    val adult: Boolean = false,
     @SerializedName("backdrop_path")
     val backdropPath: String = "",
-    @SerializedName("genre_ids")
-    val genreIds: List<Int> = listOf(),
     @SerializedName("id")
     val id: Int = 0,
     @SerializedName("original_language")
     val originalLanguage: String = "",
-    @SerializedName("original_title")
-    val originalTitle: String = "",
     @SerializedName("overview")
     val overview: String = "",
     @SerializedName("popularity")
@@ -29,8 +23,6 @@ data class DiscoverMovieItemDto(
     val releaseDate: String = "",
     @SerializedName("title")
     val title: String = "",
-    @SerializedName("video")
-    val video: Boolean = false,
     @SerializedName("vote_average")
     val voteAverage: Double = 0.0,
     @SerializedName("vote_count")
