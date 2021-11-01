@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.test.IdlingResource
 import androidx.compose.ui.window.Dialog
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -35,8 +36,10 @@ import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.C
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MOVIES_LIST_TEST_TAG
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MOVIES_LOADING_INDICATOR_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MOVIES_TAB_TEST_TAG
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.SHOWS_LIST_TEST_TAG
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.SHOWS_LOADING_INDICATOR_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.SHOWS_TAB_TEST_TAG
 import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.ProductionDetailsActivity.Companion.navigateToDetails
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredLoadingMessageWithIndicator
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredText
@@ -71,6 +74,10 @@ class MainActivity : ComponentActivity() {
 
         const val SHOWS_LIST_TEST_TAG = "shows_list_test_tag"
 
+        const val MOVIES_TAB_TEST_TAG = "movies tab test tag"
+
+        const val SHOWS_TAB_TEST_TAG = "shows_tab_test_tag"
+
         const val MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG = "main activity poster image test tag"
 
         const val SHOWS_LOADING_INDICATOR_TEST_TAG = "shows loading indicator test tag"
@@ -84,6 +91,8 @@ class MainActivity : ComponentActivity() {
 fun HomeScreen(viewModel: HomeViewModel) {
     val moviesResource by viewModel.orderedMoviesFlow.collectAsState(initial = Resource.Loading)
     val showsResource by viewModel.orderedShowsFlow.collectAsState(initial = Resource.Loading)
+
+    updateIdlingResourceStatus(moviesResource, showsResource)
 
     AnimatedProductionsTheme {
         Scaffold(
@@ -104,6 +113,14 @@ fun HomeScreen(viewModel: HomeViewModel) {
             }
         }
     }
+}
+
+fun updateIdlingResourceStatus(
+    moviesResource: Resource<List<Production>>,
+    showsResource: Resource<List<Production>>,
+) {
+    homeIdlingResource.loading =
+        moviesResource is Resource.Success && showsResource is Resource.Success
 }
 
 
@@ -222,6 +239,7 @@ fun HomeScreenTabLayout(
                             pagerState.animateScrollToPage(index)
                         }
                     },
+                    modifier = Modifier.testTag(getTestTagForTab(tab))
                 )
             }
         }
@@ -238,6 +256,12 @@ fun HomeScreenTabLayout(
             }
         }
     }
+}
+
+@Composable
+private fun getTestTagForTab(tab: MainActivity.Tab) = when (tab) {
+    MainActivity.Tab.Movies -> MOVIES_TAB_TEST_TAG
+    MainActivity.Tab.Shows -> SHOWS_TAB_TEST_TAG
 }
 
 @Composable
@@ -292,3 +316,10 @@ private fun ProductionsGridList(resource: Resource.Success<List<Production>>, te
     }
 }
 
+
+object homeIdlingResource : IdlingResource {
+    var loading = true
+
+    override val isIdleNow: Boolean
+        get() = !loading
+}

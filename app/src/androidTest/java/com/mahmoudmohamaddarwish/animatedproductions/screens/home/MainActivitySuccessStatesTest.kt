@@ -57,16 +57,23 @@ class MainActivitySuccessStatesTest {
     }
 
     @Test
+    fun app_displays_movies_and_shows_tab_layout() {
+        composeTestRule.run {
+            onNodeWithTag(MainActivity.MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG).assertIsDisplayed()
+        }
+    }
+
+    @Test
     fun app_displays_movies_tab() {
         composeTestRule.run {
-            onNodeWithText(resources.getString(R.string.movies_tab_label)).assertIsDisplayed()
+            onNodeWithTag(MainActivity.MOVIES_TAB_TEST_TAG).assertIsDisplayed()
         }
     }
 
     @Test
     fun app_displays_tv_shows_tab() {
         composeTestRule.run {
-            onNodeWithText(resources.getString(R.string.shows_tab_label)).assertIsDisplayed()
+            onNodeWithTag(MainActivity.SHOWS_TAB_TEST_TAG).assertIsDisplayed()
         }
     }
 
@@ -87,26 +94,10 @@ class MainActivitySuccessStatesTest {
 
 
     @Test
-    fun app_shows_movies_and_shows_tabs_after_success_state() {
-        runBlocking {
-            // this will force the test to wait for the success state to be emitted
-            homeViewModel.orderedMoviesFlow.dropWhile { it !is Resource.Success }.first()
-        }
-
-        composeTestRule.run {
-            onNodeWithTag("movies_and_shows_tag").assertIsDisplayed()
-        }
-    }
-
-
-    @Test
     fun app_shows_movies_list_after_success_state() {
-        runBlocking {
-            // this will force the test to wait for the success state to be emitted
-            homeViewModel.orderedMoviesFlow.dropWhile { it !is Resource.Success }.first()
-        }
-
         composeTestRule.run {
+            registerIdlingResource(homeIdlingResource)
+
             onNodeWithTag(MainActivity.MOVIES_LIST_TEST_TAG).assertIsDisplayed()
         }
     }
