@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.test.IdlingResource
 import androidx.compose.ui.window.Dialog
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -32,14 +31,6 @@ import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
-import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG
-import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG
-import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MOVIES_LIST_TEST_TAG
-import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MOVIES_LOADING_INDICATOR_TEST_TAG
-import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.MOVIES_TAB_TEST_TAG
-import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.SHOWS_LIST_TEST_TAG
-import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.SHOWS_LOADING_INDICATOR_TEST_TAG
-import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity.Companion.SHOWS_TAB_TEST_TAG
 import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.ProductionDetailsActivity.Companion.navigateToDetails
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredLoadingMessageWithIndicator
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredText
@@ -65,24 +56,6 @@ class MainActivity : ComponentActivity() {
     sealed class Tab {
         object Movies : Tab()
         object Shows : Tab()
-    }
-
-    companion object {
-        const val MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG = "movies_and_shows_tag"
-
-        const val MOVIES_LIST_TEST_TAG = "movies list test tag"
-
-        const val SHOWS_LIST_TEST_TAG = "shows_list_test_tag"
-
-        const val MOVIES_TAB_TEST_TAG = "movies tab test tag"
-
-        const val SHOWS_TAB_TEST_TAG = "shows_tab_test_tag"
-
-        const val MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG = "main activity poster image test tag"
-
-        const val SHOWS_LOADING_INDICATOR_TEST_TAG = "shows loading indicator test tag"
-
-        const val MOVIES_LOADING_INDICATOR_TEST_TAG = "movies loading indicator test tag"
     }
 }
 
@@ -119,10 +92,10 @@ fun updateIdlingResourceStatus(
     moviesResource: Resource<List<Production>>,
     showsResource: Resource<List<Production>>,
 ) {
-    homeIdlingResource.loading =
+    MainActivityIdlingResource.setIdleState(
         moviesResource is Resource.Success && showsResource is Resource.Success
+    )
 }
-
 
 @Composable
 fun SortDialog(viewModel: HomeViewModel) {
@@ -211,8 +184,8 @@ fun SortDialog(viewModel: HomeViewModel) {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun HomeScreenTabLayout(
-    moviesFlow: Resource<List<Production>>,
-    showsFlow: Resource<List<Production>>,
+    moviesResource: Resource<List<Production>>,
+    showsResource: Resource<List<Production>>,
 ) {
     val rememberCoroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
@@ -251,8 +224,8 @@ fun HomeScreenTabLayout(
             modifier = Modifier.fillMaxSize()
         ) { tabIndex ->
             when (tabs[tabIndex]) {
-                MainActivity.Tab.Movies -> MoviesTabContent(moviesFlow)
-                MainActivity.Tab.Shows -> ShowsTabContent(showsFlow)
+                MainActivity.Tab.Movies -> MoviesTabContent(moviesResource)
+                MainActivity.Tab.Shows -> ShowsTabContent(showsResource)
             }
         }
     }
@@ -316,10 +289,3 @@ private fun ProductionsGridList(resource: Resource.Success<List<Production>>, te
     }
 }
 
-
-object homeIdlingResource : IdlingResource {
-    var loading = true
-
-    override val isIdleNow: Boolean
-        get() = !loading
-}

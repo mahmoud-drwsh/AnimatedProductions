@@ -2,26 +2,16 @@ package com.mahmoudmohamaddarwish.animatedproductions.screens.home
 
 import android.content.res.Resources
 import androidx.activity.viewModels
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.R
-import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
-import com.mahmoudmohamaddarwish.animatedproductions.screens.home.HomeScreen
-import com.mahmoudmohamaddarwish.animatedproductions.screens.home.HomeViewModel
-import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MainActivity
-import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.ProductionDetailsActivity.Companion.BACKDROP_IMAGE_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.IDLING_RESOURCE_TIMEOUT
+import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DETAILS_BACKDROP_IMAGE_TEST_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -59,21 +49,21 @@ class MainActivitySuccessStatesTest {
     @Test
     fun app_displays_movies_and_shows_tab_layout() {
         composeTestRule.run {
-            onNodeWithTag(MainActivity.MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG).assertIsDisplayed()
         }
     }
 
     @Test
     fun app_displays_movies_tab() {
         composeTestRule.run {
-            onNodeWithTag(MainActivity.MOVIES_TAB_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(MOVIES_TAB_TEST_TAG).assertIsDisplayed()
         }
     }
 
     @Test
     fun app_displays_tv_shows_tab() {
         composeTestRule.run {
-            onNodeWithTag(MainActivity.SHOWS_TAB_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(SHOWS_TAB_TEST_TAG).assertIsDisplayed()
         }
     }
 
@@ -96,48 +86,40 @@ class MainActivitySuccessStatesTest {
     @Test
     fun app_shows_movies_list_after_success_state() {
         composeTestRule.run {
-            registerIdlingResource(homeIdlingResource)
+            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
 
-            onNodeWithTag(MainActivity.MOVIES_LIST_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(MOVIES_LIST_TEST_TAG).assertIsDisplayed()
         }
     }
 
 
     @Test
     fun app_shows_tv_shows_list_after_success_state() {
-        runBlocking {
-            // this will force the test to wait for the success state to be emitted
-            homeViewModel.orderedShowsFlow.dropWhile { it !is Resource.Success }.first()
-        }
-
         composeTestRule.run {
+            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
+
             onNodeWithText(resources.getString(R.string.shows_tab_label)).performClick()
 
-            onNodeWithTag(MainActivity.SHOWS_LIST_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(SHOWS_LIST_TEST_TAG).assertIsDisplayed()
         }
     }
 
 
     @Test
     fun app_navigates_to_tv_show_details_after_success_state() {
-        runBlocking {
-            // this will force the test to wait for the success state to be emitted
-            homeViewModel.orderedShowsFlow.dropWhile { it !is Resource.Success }.first()
-        }
-
         composeTestRule.run {
-            mainClock.advanceTimeBy(3000L)
+            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
 
             onNodeWithText(resources.getString(R.string.shows_tab_label)).performClick()
 
-            onNodeWithTag(MainActivity.SHOWS_LIST_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(SHOWS_LIST_TEST_TAG).assertIsDisplayed()
 
 
-            onAllNodesWithTag(MainActivity.MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG)
+            onAllNodesWithTag(MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG)
                 .onFirst()
                 .performClick()
 
-            onNodeWithTag(BACKDROP_IMAGE_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(DETAILS_BACKDROP_IMAGE_TEST_TAG).assertIsDisplayed()
         }
     }
 

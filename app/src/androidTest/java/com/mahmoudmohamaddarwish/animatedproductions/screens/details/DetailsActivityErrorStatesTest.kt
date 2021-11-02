@@ -28,9 +28,6 @@ class DetailsActivityErrorStatesTest {
     @get:Rule(order = 2)
     var composeTestRule: ComposeContentTestRule = createComposeRule()
 
-    @Inject
-    lateinit var resources: Resources
-
     @Before
     fun setup() {
         hiltTestRule.inject()

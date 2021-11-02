@@ -7,6 +7,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
+import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DETAILS_LOADING_INDICATOR_TEST_TAG
 import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DetailsScreen
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -29,9 +30,6 @@ class DetailsActivityLoadingStatesTest {
     @get:Rule(order = 2)
     var composeTestRule: ComposeContentTestRule = createComposeRule()
 
-    @Inject
-    lateinit var resources: Resources
-
     @Before
     fun setup() {
         hiltTestRule.inject()
@@ -44,7 +42,7 @@ class DetailsActivityLoadingStatesTest {
     @Test
     fun app_displays_backdrop_image() {
         composeTestRule.run {
-            onNodeWithText(resources.getString(R.string.loading)).assertIsDisplayed()
+            onNodeWithTag(DETAILS_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
         }
     }
 }

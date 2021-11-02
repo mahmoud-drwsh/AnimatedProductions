@@ -1,14 +1,14 @@
 package com.mahmoudmohamaddarwish.animatedproductions.screens.details
 
-import android.content.res.Resources
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
+import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DETAILS_BACKDROP_IMAGE_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DETAILS_POSTER_IMAGE_TEST_TAG
 import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DetailsScreen
-import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.ProductionDetailsActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,7 +16,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import javax.inject.Inject
 
 
 @ExperimentalCoroutinesApi
@@ -30,9 +29,6 @@ class DetailsActivitySuccessStatesTest {
     @get:Rule(order = 2)
     var composeTestRule: ComposeContentTestRule = createComposeRule()
 
-    @Inject
-    lateinit var resources: Resources
-
     @Before
     fun setup() {
         hiltTestRule.inject()
@@ -45,14 +41,14 @@ class DetailsActivitySuccessStatesTest {
     @Test
     fun app_displays_backdrop_image() {
         composeTestRule.run {
-            onNodeWithTag(ProductionDetailsActivity.BACKDROP_IMAGE_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(DETAILS_BACKDROP_IMAGE_TEST_TAG).assertIsDisplayed()
         }
     }
 
     @Test
     fun app_displays_poster_image() {
         composeTestRule.run {
-            onNodeWithTag(ProductionDetailsActivity.DETAILS_POSTER_IMAGE_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(DETAILS_POSTER_IMAGE_TEST_TAG).assertIsDisplayed()
         }
     }
 }

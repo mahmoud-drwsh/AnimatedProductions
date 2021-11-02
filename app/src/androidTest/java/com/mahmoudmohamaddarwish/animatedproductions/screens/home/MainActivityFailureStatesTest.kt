@@ -1,11 +1,8 @@
 package com.mahmoudmohamaddarwish.animatedproductions.screens.home
 
-import android.content.res.Resources
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -14,7 +11,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import javax.inject.Inject
 
 
 @ExperimentalCoroutinesApi
@@ -28,16 +24,13 @@ class MainActivityFailureStatesTest {
     @get:Rule(order = 2)
     var composeTestRule = createComposeRule()
 
-    @Inject
-    lateinit var resources: Resources
-
     @Before
     fun setup() {
         hiltTestRule.inject()
 
         composeTestRule.setContent {
-            HomeScreenTabLayout(moviesFlow = Resource.Error(MOVIES_ERROR_MESSAGE),
-                showsFlow = Resource.Error(SHOWS_ERROR_MESSAGE))
+            HomeScreenTabLayout(moviesResource = Resource.Error(MOVIES_ERROR_MESSAGE),
+                showsResource = Resource.Error(SHOWS_ERROR_MESSAGE))
         }
     }
 
@@ -46,7 +39,7 @@ class MainActivityFailureStatesTest {
         composeTestRule.run {
             onNodeWithText(MOVIES_ERROR_MESSAGE).assertIsDisplayed()
 
-            onNodeWithText(resources.getString(R.string.shows_tab_label)).performClick()
+            onNodeWithTag(SHOWS_TAB_TEST_TAG).performClick()
 
             onNodeWithText(SHOWS_ERROR_MESSAGE).assertIsDisplayed()
         }
@@ -57,7 +50,7 @@ class MainActivityFailureStatesTest {
         composeTestRule.run {
             onNodeWithText(MOVIES_ERROR_MESSAGE).assertIsDisplayed()
 
-            onNodeWithText(resources.getString(R.string.shows_tab_label)).performClick()
+            onNodeWithTag(SHOWS_TAB_TEST_TAG).performClick()
 
             onNodeWithText(SHOWS_ERROR_MESSAGE).assertIsDisplayed()
         }

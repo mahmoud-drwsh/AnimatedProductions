@@ -1,7 +1,6 @@
 package com.mahmoudmohamaddarwish.animatedproductions.screens.home
 
 import android.content.res.Resources
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -36,7 +35,7 @@ class MainActivityLoadingStatesTest {
         hiltTestRule.inject()
 
         composeTestRule.setContent {
-            HomeScreenTabLayout(moviesFlow = Resource.Loading, showsFlow = Resource.Loading)
+            HomeScreenTabLayout(moviesResource = Resource.Loading, showsResource = Resource.Loading)
         }
     }
 
@@ -45,7 +44,7 @@ class MainActivityLoadingStatesTest {
         composeTestRule.run {
             onNodeWithText(resources.getString(R.string.movies_tab_label)).assertIsDisplayed()
 
-            onNodeWithTag(MainActivity.MOVIES_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(MOVIES_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
         }
     }
 
@@ -54,7 +53,7 @@ class MainActivityLoadingStatesTest {
         composeTestRule.run {
             onNodeWithText(resources.getString(R.string.shows_tab_label)).performClick()
 
-            onNodeWithTag(MainActivity.SHOWS_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(SHOWS_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
         }
     }
 }

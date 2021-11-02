@@ -28,12 +28,11 @@ import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
 import com.mahmoudmohamaddarwish.animatedproductions.navigateUp
-import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.ProductionDetailsActivity.Companion.BACKDROP_IMAGE_TEST_TAG
-import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.ProductionDetailsActivity.Companion.DETAILS_POSTER_IMAGE_TEST_TAG
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredLoadingMessageWithIndicator
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredText
 import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CoilImage
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.*
+
 
 class ProductionDetailsActivity : ComponentActivity() {
 
@@ -46,6 +45,8 @@ class ProductionDetailsActivity : ComponentActivity() {
 
         setContent {
             val state by viewModel.productionObject.collectAsState(initial = Resource.Loading)
+
+            updateIdlingResourceStatus(state)
 
             AnimatedProductionsTheme {
                 DetailsScreen(state) {
@@ -67,11 +68,10 @@ class ProductionDetailsActivity : ComponentActivity() {
 
         internal fun ProductionDetailsActivity.getProductionObject(): Production? =
             intent.getParcelableExtra(PRODUCTION_INTENT_KEY)
-
-        const val BACKDROP_IMAGE_TEST_TAG = "details_backdrop_image_test_tag"
-
-        const val DETAILS_POSTER_IMAGE_TEST_TAG = "details_poster_image_test_tag"
     }
+
+    private fun updateIdlingResourceStatus(productionResource: Resource<Production>) =
+        DetailsActivityIdlingResource.setIdleState(productionResource is Resource.Success)
 }
 
 @Composable
@@ -96,7 +96,9 @@ fun DetailsScreen(detailsUIState: Resource<Production>, navigateBack: () -> Unit
         ) {
             when (detailsUIState) {
                 is Resource.Error -> CenteredText(text = detailsUIState.message)
-                is Resource.Loading -> CenteredLoadingMessageWithIndicator()
+                is Resource.Loading -> CenteredLoadingMessageWithIndicator(
+                    Modifier.testTag(DETAILS_LOADING_INDICATOR_TEST_TAG)
+                )
                 is Resource.Success -> ProductionDetailsContent(detailsUIState.data)
             }
         }
@@ -116,7 +118,7 @@ private fun ProductionDetailsContent(detailsUIState: Production) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(BACKDROP_HEIGHT)
-                .testTag(BACKDROP_IMAGE_TEST_TAG))
+                .testTag(DETAILS_BACKDROP_IMAGE_TEST_TAG))
 
         Column(
             Modifier

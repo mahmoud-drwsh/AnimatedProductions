@@ -17,7 +17,7 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class TMDBRepoTest {
+class ListMoviesAndShowsRepoTest {
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
@@ -38,7 +38,7 @@ class TMDBRepoTest {
 
         val resource = moviesFlow.first()
 
-        assert(resource == Resource.Loading)
+        assert(resource is Resource.Loading)
 
         assert(moviesFlow.dropWhile { it !is Resource.Success }.first() is Resource.Success)
     }
@@ -51,7 +51,7 @@ class TMDBRepoTest {
 
         val movies = showsFlow.first()
 
-        assert(movies == Resource.Loading)
+        assert(movies is Resource.Loading)
 
         assert(showsFlow.dropWhile { it !is Resource.Success }.first() is Resource.Success)
     }
