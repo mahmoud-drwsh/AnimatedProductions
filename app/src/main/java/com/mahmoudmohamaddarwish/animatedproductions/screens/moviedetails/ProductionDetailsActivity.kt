@@ -46,8 +46,6 @@ class ProductionDetailsActivity : ComponentActivity() {
         setContent {
             val state by viewModel.productionObjectFlow.collectAsState(initial = Resource.Loading)
 
-            LaunchedEffect(state) { updateIdlingResourceStatus(state) }
-
             AnimatedProductionsTheme {
                 DetailsScreen(state) {
                     navigateUp()
@@ -69,9 +67,6 @@ class ProductionDetailsActivity : ComponentActivity() {
         internal fun ProductionDetailsActivity.getProductionObject(): Production? =
             intent.getParcelableExtra(PRODUCTION_INTENT_KEY)
     }
-
-    private fun updateIdlingResourceStatus(productionResource: Resource<Production>) =
-        DetailsActivityIdlingResource.setIdleState(productionResource is Resource.Success)
 }
 
 @Composable

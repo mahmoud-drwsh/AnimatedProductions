@@ -27,6 +27,6 @@ class ProductionDetailsViewModel @Inject constructor() : ViewModel() {
     }
 
     companion object {
-  const val UNEXPECTED_ERROR_MESSAGE = "Unexpected error"
+        const val UNEXPECTED_ERROR_MESSAGE = "Unexpected error"
     }
 }
