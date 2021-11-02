@@ -2,10 +2,8 @@ package com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails
 
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
-import kotlinx.coroutines.flow.dropWhile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.*
 
 import org.junit.Before
 import org.junit.Test
@@ -20,34 +18,34 @@ class ProductionDetailsViewModelTest {
     }
 
     @Test
-    fun `production object loads after being passed to the viewModel`() {
+    fun `production object loads after being passed to the viewModel`() = runBlocking {
         productionDetailsViewModel.loadProductionObject(Production.dummy)
-        runBlocking {
-            val first =
-                productionDetailsViewModel.productionObject.dropWhile { it !is Resource.Success }
-                    .first()
-            assert(first is Resource.Success)
 
-            val value = first as Resource.Success
+        val firstSuccessStateResource = productionDetailsViewModel.productionObjectFlow.first {
+            it is Resource.Success
+        } as Resource.Success
 
-            assert(value.data == Production.dummy)
-        }
+        assert(firstSuccessStateResource.data == Production.dummy)
     }
 
     @Test
-    fun `error state emitted after passing null to the viewModel`() {
+    fun `error state emitted after passing null to the viewModel`() = runBlocking {
         productionDetailsViewModel.loadProductionObject(null)
 
-        runBlocking {
-            val first =
-                productionDetailsViewModel.productionObject.dropWhile { it !is Resource.Error }
-                    .first()
+        val firstErrorStateResourceEmitted = productionDetailsViewModel.productionObjectFlow.first {
+            it is Resource.Error
+        } as Resource.Error
 
-            assert(first is Resource.Error)
+        val expectedMessageEqualsTheEmittedMessage =
+            firstErrorStateResourceEmitted.message == ProductionDetailsViewModel.UNEXPECTED_ERROR_MESSAGE
 
-            val value = first as Resource.Error
+        assert(expectedMessageEqualsTheEmittedMessage)
+    }
 
-            assert(value.message == ProductionDetailsViewModel.UNEXPECTED_ERROR_MESSAGE)
-        }
+    @Test
+    fun `loading state emitted first`() = runBlocking {
+        val first = productionDetailsViewModel.productionObjectFlow.first()
+
+        assert(first is Resource.Loading)
     }
 }

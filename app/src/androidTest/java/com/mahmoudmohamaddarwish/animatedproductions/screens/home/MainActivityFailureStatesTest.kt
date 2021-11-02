@@ -18,16 +18,11 @@ import org.junit.runner.RunWith
 @HiltAndroidTest
 class MainActivityFailureStatesTest {
 
-    @get:Rule(order = 1)
-    var hiltTestRule = HiltAndroidRule(this)
-
-    @get:Rule(order = 2)
+    @get:Rule
     var composeTestRule = createComposeRule()
 
     @Before
     fun setup() {
-        hiltTestRule.inject()
-
         composeTestRule.setContent {
             HomeScreenTabLayout(moviesResource = Resource.Error(MOVIES_ERROR_MESSAGE),
                 showsResource = Resource.Error(SHOWS_ERROR_MESSAGE))
@@ -37,19 +32,15 @@ class MainActivityFailureStatesTest {
     @Test
     fun app_displays_movies_error_message() {
         composeTestRule.run {
+            onNodeWithTag(MAIN_ACTIVITY_MOVIES_TAB_TEST_TAG).performClick()
+
             onNodeWithText(MOVIES_ERROR_MESSAGE).assertIsDisplayed()
-
-            onNodeWithTag(MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG).performClick()
-
-            onNodeWithText(SHOWS_ERROR_MESSAGE).assertIsDisplayed()
         }
     }
 
     @Test
     fun app_displays_tv_shows_error_message() {
         composeTestRule.run {
-            onNodeWithText(MOVIES_ERROR_MESSAGE).assertIsDisplayed()
-
             onNodeWithTag(MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG).performClick()
 
             onNodeWithText(SHOWS_ERROR_MESSAGE).assertIsDisplayed()

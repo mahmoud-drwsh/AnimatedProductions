@@ -7,7 +7,7 @@ screens, for each there is a file for keeping the test tags in is found in its s
 
 One more thing to keep in mind is that since Flows are used for asynchronous data fetching, the
 tests differ in that regard as well. And since Hilt is used for dependency injection, most tests had
-to be written in the androidTest package since Hilt depends on the Android framework.
+to be written in the androidTest folder since Hilt depends on the Android framework.
 
 Please refer to this page for a detailed description of how testing is done with Compose:
 https://developer.android.com/jetpack/compose/testing
@@ -30,8 +30,8 @@ The Test Scenarios:
 
 For each of the screens, I have written 3 different collections of tests for the success, loading,
 and failure states. I have been blessed with architecting the app in such a way that by providing
-the desired state representation object to the root Composable, I have the UI state that I want
-which the test is done to.
+the desired state representation object to the root Composable, I have the UI state that I want to
+test.
 
 Since I have background operations that sometimes need to be waited for to be finished before the
 test can start, I have applied the concept of an idlingResource object which is used by the Compose
@@ -41,7 +41,9 @@ It is crucial to keep in mind that Compose differs from the view UI system even 
 be similarities like the concept of an IdlingResource object which is not exactly like how it is
 applied when testing views.
 
-Each of the Composables below has a distinct test tag that denotes for which Composable it is.
+Each of the Composables that that are targeted in the tests has a distinct test tag that denotes for
+which Composable it is.
+
 
 The different scenarios for the Home screen:
 
@@ -73,6 +75,11 @@ with the test tag for the details screen root Composable is displayed.
 i. Navigate to the shows list and click on a show and ensure that the details screen is displayed by
 asserting that the Composable with the test tag for the details screen root Composable is displayed.
 
+j. Ensure the icon button for the sorting options dialog is shown by asserting that the composable
+with the test tag for the sorting options icon button is shown.
+
+k. Ensure the options shown are all shown by asserting that all the sorting option labels are shown.
+
 Loading state:
 
 a. Ensure the loading indicator is shown by invoking the home screen Composable with a loading state
@@ -85,7 +92,8 @@ Failure state:
 a. Ensure the error message is displayed by asserting that the Composable with the test tag for the
 error message Composable is displayed after invoking the Composable with the failure state object.
 
-For the Details screen
+
+For the Details screen:
 
 Success state:
 

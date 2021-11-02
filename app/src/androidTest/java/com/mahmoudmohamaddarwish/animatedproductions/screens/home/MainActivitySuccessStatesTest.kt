@@ -8,7 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
 import com.mahmoudmohamaddarwish.animatedproductions.screens.IDLING_RESOURCE_TIMEOUT
-import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DETAILS_BACKDROP_IMAGE_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DETAILS_ROOT_COMPOSABLE_TEST_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,22 +25,17 @@ import javax.inject.Inject
 class MainActivitySuccessStatesTest {
 
     @get:Rule(order = 1)
-    var hiltTestRule = HiltAndroidRule(this)
+    var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 2)
     var composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    private lateinit var homeViewModel: HomeViewModel
-
-    @Inject
-    lateinit var resources: Resources
-
     @Before
     fun setup() {
-        hiltTestRule.inject()
+        hiltRule.inject()
 
         composeTestRule.setContent {
-            homeViewModel = composeTestRule.activity.viewModels<HomeViewModel>().value
+            val homeViewModel by composeTestRule.activity.viewModels<HomeViewModel>()
 
             HomeScreen(homeViewModel)
         }
@@ -68,12 +63,91 @@ class MainActivitySuccessStatesTest {
     }
 
     @Test
-    fun app_sorting_icon_button() {
+    fun app_shows_movies_list_after_success_state() {
         composeTestRule.run {
-            val onNodeWithContentDescription =
-                onNodeWithContentDescription(resources.getString(R.string.sort_productions_icon_description))
-            onNodeWithContentDescription.assertIsDisplayed()
-            onNodeWithContentDescription.performClick()
+            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
+
+            // click on the movies tab to show the movies list
+            onNodeWithTag(MAIN_ACTIVITY_MOVIES_TAB_TEST_TAG).performClick()
+
+            onNodeWithTag(MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG).assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun app_shows_tv_shows_list_after_success_state() {
+        composeTestRule.run {
+            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
+
+            // click on the Shows tab to show the TV shows list
+            onNodeWithTag(MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG).performClick()
+
+            onNodeWithTag(MAIN_ACTIVITY_SHOWS_LIST_TEST_TAG).assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun app_navigates_to_tv_show_details_after_success_state() {
+        composeTestRule.run {
+            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
+
+            // click on the shows tab
+            onNodeWithTag(MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG).performClick()
+
+            // ensure the list of shows is shown
+            onNodeWithTag(MAIN_ACTIVITY_SHOWS_LIST_TEST_TAG).assertIsDisplayed()
+
+            // click on the first show in the list
+            onAllNodesWithTag(MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG)
+                .onFirst()
+                .performClick()
+
+            // ensure the details screen is displayed
+            onNodeWithTag(DETAILS_ROOT_COMPOSABLE_TEST_TAG).assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun app_navigates_to_movie_details_after_success_state() {
+        composeTestRule.run {
+            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
+
+            onNodeWithTag(MAIN_ACTIVITY_MOVIES_TAB_TEST_TAG).performClick()
+
+            // ensure the list of movies is shown
+            onNodeWithTag(MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG).assertIsDisplayed()
+
+            // click on the first movie in the list
+            onAllNodesWithTag(MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG)
+                .onFirst()
+                .performClick()
+
+            // ensure the details screen is displayed
+            onNodeWithTag(DETAILS_ROOT_COMPOSABLE_TEST_TAG).assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun ensure_sorting_icon_button_is_displayed() {
+        composeTestRule.run {
+            val sortingIconButton =
+                onNodeWithTag(MAIN_ACTIVITY_SORTING_ICON_BUTTON_TEST_TAG)
+
+            sortingIconButton.assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun ensure_all_sorting_option_are_displayed() {
+        composeTestRule.run {
+            val sortingIconButton =
+                onNodeWithTag(MAIN_ACTIVITY_SORTING_ICON_BUTTON_TEST_TAG)
+
+            sortingIconButton.assertIsDisplayed()
+
+            // show the options
+            sortingIconButton.performClick()
+
 
             onNodeWithText(Order.Property.Name.label).assertIsDisplayed()
             onNodeWithText(Order.Property.RELEASE_DATE.label).assertIsDisplayed()
@@ -81,47 +155,4 @@ class MainActivitySuccessStatesTest {
             onNodeWithText(Order.Type.DESCENDING.label).assertIsDisplayed()
         }
     }
-
-
-    @Test
-    fun app_shows_movies_list_after_success_state() {
-        composeTestRule.run {
-            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
-
-            onNodeWithTag(MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG).assertIsDisplayed()
-        }
-    }
-
-
-    @Test
-    fun app_shows_tv_shows_list_after_success_state() {
-        composeTestRule.run {
-            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
-
-            onNodeWithText(resources.getString(R.string.shows_tab_label)).performClick()
-
-            onNodeWithTag(MAIN_ACTIVITY_SHOWS_LIST_TEST_TAG).assertIsDisplayed()
-        }
-    }
-
-
-    @Test
-    fun app_navigates_to_tv_show_details_after_success_state() {
-        composeTestRule.run {
-            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
-
-            onNodeWithText(resources.getString(R.string.shows_tab_label)).performClick()
-
-            onNodeWithTag(MAIN_ACTIVITY_SHOWS_LIST_TEST_TAG).assertIsDisplayed()
-
-
-            onAllNodesWithTag(MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG)
-                .onFirst()
-                .performClick()
-
-            onNodeWithTag(DETAILS_BACKDROP_IMAGE_TEST_TAG).assertIsDisplayed()
-        }
-    }
-
-
 }

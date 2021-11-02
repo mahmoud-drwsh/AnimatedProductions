@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 @HiltAndroidTest
 class DetailsActivityErrorStatesTest {
 
-    @get:Rule(order = 1)
+    @get:Rule
     var composeTestRule: ComposeContentTestRule = createComposeRule()
 
     @Before

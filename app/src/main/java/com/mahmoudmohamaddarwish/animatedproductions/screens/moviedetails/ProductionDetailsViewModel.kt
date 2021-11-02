@@ -13,7 +13,7 @@ class ProductionDetailsViewModel @Inject constructor() : ViewModel() {
 
     private val _productionObject: MutableStateFlow<Resource<Production>> =
         MutableStateFlow(Resource.Loading)
-    val productionObject: Flow<Resource<Production>>
+    val productionObjectFlow: Flow<Resource<Production>>
         get() = _productionObject
 
     fun loadProductionObject(production: Production?) {

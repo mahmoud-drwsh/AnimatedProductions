@@ -65,9 +65,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
     val moviesResource by viewModel.orderedMoviesFlow.collectAsState(initial = Resource.Loading)
     val showsResource by viewModel.orderedShowsFlow.collectAsState(initial = Resource.Loading)
 
-    LaunchedEffect(moviesResource, showsResource) {
-        updateIdlingResourceStatus(moviesResource, showsResource)
-    }
+    updateIdlingResourceStatus(moviesResource, showsResource)
 
     AnimatedProductionsTheme {
         Scaffold(
@@ -105,7 +103,10 @@ fun SortDialog(viewModel: HomeViewModel) {
 
     val order by viewModel.order.collectAsState(initial = Order.default)
 
-    IconButton(onClick = { shown = true }) {
+    IconButton(
+        onClick = { shown = true },
+        modifier = Modifier.testTag(MAIN_ACTIVITY_SORTING_ICON_BUTTON_TEST_TAG),
+    ) {
         Icon(Icons.Default.Sort,
             contentDescription = stringResource(R.string.sort_productions_icon_description))
     }

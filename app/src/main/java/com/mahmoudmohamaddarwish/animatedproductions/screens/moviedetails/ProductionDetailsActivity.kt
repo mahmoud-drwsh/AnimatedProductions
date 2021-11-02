@@ -44,7 +44,7 @@ class ProductionDetailsActivity : ComponentActivity() {
         viewModel.loadProductionObject(getProductionObject())
 
         setContent {
-            val state by viewModel.productionObject.collectAsState(initial = Resource.Loading)
+            val state by viewModel.productionObjectFlow.collectAsState(initial = Resource.Loading)
 
             LaunchedEffect(state) { updateIdlingResourceStatus(state) }
 

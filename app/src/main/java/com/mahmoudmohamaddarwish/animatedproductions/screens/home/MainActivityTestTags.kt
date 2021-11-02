@@ -15,3 +15,5 @@ const val MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG = "main activity poster image test
 const val MAIN_ACTIVITY_SHOWS_LOADING_INDICATOR_TEST_TAG = "shows loading indicator test tag"
 
 const val MAIN_ACTIVITY_MOVIES_LOADING_INDICATOR_TEST_TAG = "movies loading indicator test tag"
+
+const val MAIN_ACTIVITY_SORTING_ICON_BUTTON_TEST_TAG = "sorting icon test tag"

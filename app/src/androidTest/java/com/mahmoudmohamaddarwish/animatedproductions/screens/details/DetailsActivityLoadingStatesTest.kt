@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltAndroidTest
 class DetailsActivityLoadingStatesTest {
 
-    @get:Rule(order = 1)
+    @get:Rule
     var composeTestRule: ComposeContentTestRule = createComposeRule()
 
     @Before

@@ -21,19 +21,11 @@ import javax.inject.Inject
 @HiltAndroidTest
 class MainActivityLoadingStatesTest {
 
-    @get:Rule(order = 1)
-    var hiltTestRule = HiltAndroidRule(this)
-
-    @get:Rule(order = 2)
+    @get:Rule
     var composeTestRule = createComposeRule()
-
-    @Inject
-    lateinit var resources: Resources
 
     @Before
     fun setup() {
-        hiltTestRule.inject()
-
         composeTestRule.setContent {
             HomeScreenTabLayout(moviesResource = Resource.Loading, showsResource = Resource.Loading)
         }
@@ -42,7 +34,7 @@ class MainActivityLoadingStatesTest {
     @Test
     fun app_displays_movies_error_message() {
         composeTestRule.run {
-            onNodeWithText(resources.getString(R.string.movies_tab_label)).assertIsDisplayed()
+            onNodeWithTag(MAIN_ACTIVITY_MOVIES_TAB_TEST_TAG).assertIsDisplayed()
 
             onNodeWithTag(MAIN_ACTIVITY_MOVIES_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
         }
@@ -51,7 +43,7 @@ class MainActivityLoadingStatesTest {
     @Test
     fun app_displays_tv_shows_error_message() {
         composeTestRule.run {
-            onNodeWithText(resources.getString(R.string.shows_tab_label)).performClick()
+            onNodeWithTag(MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG).performClick()
 
             onNodeWithTag(MAIN_ACTIVITY_SHOWS_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
         }
