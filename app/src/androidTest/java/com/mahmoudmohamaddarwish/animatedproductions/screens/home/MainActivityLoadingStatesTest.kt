@@ -44,7 +44,7 @@ class MainActivityLoadingStatesTest {
         composeTestRule.run {
             onNodeWithText(resources.getString(R.string.movies_tab_label)).assertIsDisplayed()
 
-            onNodeWithTag(MOVIES_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(MAIN_ACTIVITY_MOVIES_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
         }
     }
 
@@ -53,7 +53,7 @@ class MainActivityLoadingStatesTest {
         composeTestRule.run {
             onNodeWithText(resources.getString(R.string.shows_tab_label)).performClick()
 
-            onNodeWithTag(SHOWS_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(MAIN_ACTIVITY_SHOWS_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
         }
     }
 }

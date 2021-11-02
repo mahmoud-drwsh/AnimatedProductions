@@ -1,11 +1,11 @@
 package com.mahmoudmohamaddarwish.animatedproductions.screens.details
 
-import android.content.res.Resources
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
+import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DETAILS_ERROR_MESSAGE_TEST_TAG
 import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DetailsScreen
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -14,7 +14,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import javax.inject.Inject
 
 
 @ExperimentalCoroutinesApi
@@ -23,24 +22,24 @@ import javax.inject.Inject
 class DetailsActivityErrorStatesTest {
 
     @get:Rule(order = 1)
-    var hiltTestRule: HiltAndroidRule = HiltAndroidRule(this)
-
-    @get:Rule(order = 2)
     var composeTestRule: ComposeContentTestRule = createComposeRule()
 
     @Before
     fun setup() {
-        hiltTestRule.inject()
-
         composeTestRule.setContent {
             DetailsScreen(detailsUIState = Resource.Error(TEST_ERROR_MESSAGE)) {}
         }
     }
 
     @Test
-    fun app_displays_backdrop_image() {
+    fun app_displays_error_message() {
         composeTestRule.run {
-            onNodeWithText(TEST_ERROR_MESSAGE).assertIsDisplayed()
+            val errorMessageComposable = onNodeWithTag(DETAILS_ERROR_MESSAGE_TEST_TAG)
+
+            errorMessageComposable.assertIsDisplayed()
+
+            // the error message is displayed in a descendant of the root error message composable
+            errorMessageComposable.assert(hasAnyDescendant(hasText(TEST_ERROR_MESSAGE)))
         }
     }
 

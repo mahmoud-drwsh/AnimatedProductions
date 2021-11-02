@@ -39,7 +39,7 @@ class MainActivityFailureStatesTest {
         composeTestRule.run {
             onNodeWithText(MOVIES_ERROR_MESSAGE).assertIsDisplayed()
 
-            onNodeWithTag(SHOWS_TAB_TEST_TAG).performClick()
+            onNodeWithTag(MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG).performClick()
 
             onNodeWithText(SHOWS_ERROR_MESSAGE).assertIsDisplayed()
         }
@@ -50,7 +50,7 @@ class MainActivityFailureStatesTest {
         composeTestRule.run {
             onNodeWithText(MOVIES_ERROR_MESSAGE).assertIsDisplayed()
 
-            onNodeWithTag(SHOWS_TAB_TEST_TAG).performClick()
+            onNodeWithTag(MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG).performClick()
 
             onNodeWithText(SHOWS_ERROR_MESSAGE).assertIsDisplayed()
         }

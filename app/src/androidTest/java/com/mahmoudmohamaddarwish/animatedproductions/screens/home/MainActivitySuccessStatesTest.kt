@@ -49,21 +49,21 @@ class MainActivitySuccessStatesTest {
     @Test
     fun app_displays_movies_and_shows_tab_layout() {
         composeTestRule.run {
-            onNodeWithTag(MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(MAIN_ACTIVITY_MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG).assertIsDisplayed()
         }
     }
 
     @Test
     fun app_displays_movies_tab() {
         composeTestRule.run {
-            onNodeWithTag(MOVIES_TAB_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(MAIN_ACTIVITY_MOVIES_TAB_TEST_TAG).assertIsDisplayed()
         }
     }
 
     @Test
     fun app_displays_tv_shows_tab() {
         composeTestRule.run {
-            onNodeWithTag(SHOWS_TAB_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG).assertIsDisplayed()
         }
     }
 
@@ -88,7 +88,7 @@ class MainActivitySuccessStatesTest {
         composeTestRule.run {
             waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
 
-            onNodeWithTag(MOVIES_LIST_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG).assertIsDisplayed()
         }
     }
 
@@ -100,7 +100,7 @@ class MainActivitySuccessStatesTest {
 
             onNodeWithText(resources.getString(R.string.shows_tab_label)).performClick()
 
-            onNodeWithTag(SHOWS_LIST_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(MAIN_ACTIVITY_SHOWS_LIST_TEST_TAG).assertIsDisplayed()
         }
     }
 
@@ -112,7 +112,7 @@ class MainActivitySuccessStatesTest {
 
             onNodeWithText(resources.getString(R.string.shows_tab_label)).performClick()
 
-            onNodeWithTag(SHOWS_LIST_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(MAIN_ACTIVITY_SHOWS_LIST_TEST_TAG).assertIsDisplayed()
 
 
             onAllNodesWithTag(MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG)

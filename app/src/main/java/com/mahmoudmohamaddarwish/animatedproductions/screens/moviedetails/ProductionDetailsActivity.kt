@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -23,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
@@ -46,7 +46,7 @@ class ProductionDetailsActivity : ComponentActivity() {
         setContent {
             val state by viewModel.productionObject.collectAsState(initial = Resource.Loading)
 
-            updateIdlingResourceStatus(state)
+            LaunchedEffect(state) { updateIdlingResourceStatus(state) }
 
             AnimatedProductionsTheme {
                 DetailsScreen(state) {
@@ -89,13 +89,15 @@ fun DetailsScreen(detailsUIState: Resource<Production>, navigateBack: () -> Unit
                     }
                 }
             )
-        }
+        },
+        modifier = Modifier.testTag(DETAILS_ROOT_COMPOSABLE_TEST_TAG)
     ) { paddingValues ->
         Box(
             Modifier.padding(paddingValues)
         ) {
             when (detailsUIState) {
-                is Resource.Error -> CenteredText(text = detailsUIState.message)
+                is Resource.Error -> CenteredText(text = detailsUIState.message, Modifier.testTag(
+                    DETAILS_ERROR_MESSAGE_TEST_TAG))
                 is Resource.Loading -> CenteredLoadingMessageWithIndicator(
                     Modifier.testTag(DETAILS_LOADING_INDICATOR_TEST_TAG)
                 )
@@ -104,6 +106,7 @@ fun DetailsScreen(detailsUIState: Resource<Production>, navigateBack: () -> Unit
         }
     }
 }
+
 
 @Composable
 private fun ProductionDetailsContent(detailsUIState: Production) {
@@ -133,23 +136,27 @@ private fun ProductionDetailsContent(detailsUIState: Production) {
                     url = detailsUIState.posterPath,
                     imageDescription = stringResource(R.string.poster_image_description),
                     Modifier
-                        .width(128.dp)
+                        .width(DETAILS_POSTER_IMAGE_WIDTH)
                         .testTag(DETAILS_POSTER_IMAGE_TEST_TAG)
                 )
 
                 Column(
                     verticalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_PADDING),
                 ) {
-                    Text(text = detailsUIState.name, style = MaterialTheme.typography.h5)
+                    Text(
+                        text = detailsUIState.name, style = MaterialTheme.typography.h5,
+                        modifier = Modifier.testTag(DETAILS_TITLE_TEXT_TEST_TAG),
+                    )
 
-                    Text(text = detailsUIState.firstAirDate,
-                        style = MaterialTheme.typography.subtitle1)
-
-
+                    Text(
+                        text = detailsUIState.firstAirDate,
+                        style = MaterialTheme.typography.subtitle1,
+                    )
                 }
             }
 
-            Text(text = detailsUIState.overview, style = MaterialTheme.typography.body1)
+            Text(text = detailsUIState.overview, style = MaterialTheme.typography.body1,
+                modifier = Modifier.testTag(DETAILS_OVERVIEW_TEXT_TEST_TAG))
 
             Divider(Modifier.fillMaxWidth())
 

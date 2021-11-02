@@ -25,22 +25,17 @@ import javax.inject.Inject
 class DetailsActivityLoadingStatesTest {
 
     @get:Rule(order = 1)
-    var hiltTestRule: HiltAndroidRule = HiltAndroidRule(this)
-
-    @get:Rule(order = 2)
     var composeTestRule: ComposeContentTestRule = createComposeRule()
 
     @Before
     fun setup() {
-        hiltTestRule.inject()
-
         composeTestRule.setContent {
             DetailsScreen(detailsUIState = Resource.Loading) {}
         }
     }
 
     @Test
-    fun app_displays_backdrop_image() {
+    fun app_displays_loading_indicator() {
         composeTestRule.run {
             onNodeWithTag(DETAILS_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
         }

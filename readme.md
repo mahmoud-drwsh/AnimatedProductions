@@ -66,6 +66,5 @@ Loading state:
 a. Ensure the loading indicator is shown.
 
 Failure state:
-a. Ensure the error message is displayed.
-
-
+a. Ensure the error message composable is displayed.
+b. Ensure the error message text is displayed.

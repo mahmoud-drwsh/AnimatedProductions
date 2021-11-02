@@ -33,26 +33,50 @@ class ListMoviesAndShowsRepoTest {
 
     @Suppress("IllegalIdentifier")
     @Test
-    fun `ensure movies are returned by the service`() = runBlocking {
+    fun `ensure Loading is emitted first by the movies flow`() = runBlocking {
         val moviesFlow = listMoviesAndShowsRepo.moviesFlow
 
-        val resource = moviesFlow.first()
+        val firstEmittedValue = moviesFlow.first()
 
-        assert(resource is Resource.Loading)
-
-        assert(moviesFlow.dropWhile { it !is Resource.Success }.first() is Resource.Success)
+        assert(firstEmittedValue is Resource.Loading)
     }
 
 
     @Suppress("IllegalIdentifier")
     @Test
-    fun `ensure shows are returned by the service`() = runBlocking {
-        val showsFlow = listMoviesAndShowsRepo.showsFlow
+    fun `ensure Loading is emitted first by the shows flow`() = runBlocking {
+        val moviesFlow = listMoviesAndShowsRepo.showsFlow
 
-        val movies = showsFlow.first()
+        val firstEmittedValue = moviesFlow.first()
 
-        assert(movies is Resource.Loading)
+        assert(firstEmittedValue is Resource.Loading)
+    }
 
-        assert(showsFlow.dropWhile { it !is Resource.Success }.first() is Resource.Success)
+
+    @Suppress("IllegalIdentifier")
+    @Test
+    fun `ensure valid movie objects are returned by the service`() = runBlocking {
+        val moviesFlow = listMoviesAndShowsRepo.moviesFlow
+
+        val firstSuccessEmitted = moviesFlow.first { it is Resource.Success } as Resource.Success
+
+        val allMovieObjectsHaveNonBlankNameProperties =
+            firstSuccessEmitted.data.all { it.name.isNotBlank() }
+
+        assert(allMovieObjectsHaveNonBlankNameProperties)
+    }
+
+
+    @Suppress("IllegalIdentifier")
+    @Test
+    fun `ensure valid TV show objects are returned by the service`() = runBlocking {
+        val moviesFlow = listMoviesAndShowsRepo.showsFlow
+
+        val firstSuccessEmitted = moviesFlow.first { it is Resource.Success } as Resource.Success
+
+        val allShowObjectsHaveNonBlankNameProperties =
+            firstSuccessEmitted.data.all { it.name.isNotBlank() }
+
+        assert(allShowObjectsHaveNonBlankNameProperties)
     }
 }

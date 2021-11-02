@@ -65,7 +65,9 @@ fun HomeScreen(viewModel: HomeViewModel) {
     val moviesResource by viewModel.orderedMoviesFlow.collectAsState(initial = Resource.Loading)
     val showsResource by viewModel.orderedShowsFlow.collectAsState(initial = Resource.Loading)
 
-    updateIdlingResourceStatus(moviesResource, showsResource)
+    LaunchedEffect(moviesResource, showsResource) {
+        updateIdlingResourceStatus(moviesResource, showsResource)
+    }
 
     AnimatedProductionsTheme {
         Scaffold(
@@ -194,7 +196,7 @@ fun HomeScreenTabLayout(
 
     Column(Modifier
         .fillMaxSize()
-        .testTag(MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG)) {
+        .testTag(MAIN_ACTIVITY_MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG)) {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
             indicator = { tabPositions ->
@@ -233,8 +235,8 @@ fun HomeScreenTabLayout(
 
 @Composable
 private fun getTestTagForTab(tab: MainActivity.Tab) = when (tab) {
-    MainActivity.Tab.Movies -> MOVIES_TAB_TEST_TAG
-    MainActivity.Tab.Shows -> SHOWS_TAB_TEST_TAG
+    MainActivity.Tab.Movies -> MAIN_ACTIVITY_MOVIES_TAB_TEST_TAG
+    MainActivity.Tab.Shows -> MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG
 }
 
 @Composable
@@ -247,18 +249,18 @@ fun getLabelForTab(tab: MainActivity.Tab): String = when (tab) {
 fun MoviesTabContent(resource: Resource<List<Production>>) = when (resource) {
     is Resource.Error -> CenteredText(text = resource.message)
     is Resource.Loading -> CenteredLoadingMessageWithIndicator(Modifier.testTag(
-        MOVIES_LOADING_INDICATOR_TEST_TAG))
+        MAIN_ACTIVITY_MOVIES_LOADING_INDICATOR_TEST_TAG))
     is Resource.Success -> ProductionsGridList(resource = resource,
-        testTag = MOVIES_LIST_TEST_TAG)
+        testTag = MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG)
 }
 
 @Composable
 fun ShowsTabContent(resource: Resource<List<Production>>) = when (resource) {
     is Resource.Error -> CenteredText(text = resource.message)
     is Resource.Loading -> CenteredLoadingMessageWithIndicator(Modifier.testTag(
-        SHOWS_LOADING_INDICATOR_TEST_TAG))
+        MAIN_ACTIVITY_SHOWS_LOADING_INDICATOR_TEST_TAG))
     is Resource.Success -> ProductionsGridList(resource,
-        SHOWS_LIST_TEST_TAG)
+        MAIN_ACTIVITY_SHOWS_LIST_TEST_TAG)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
