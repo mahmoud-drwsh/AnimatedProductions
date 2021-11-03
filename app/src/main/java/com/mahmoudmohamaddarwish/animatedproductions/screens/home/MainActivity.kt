@@ -7,6 +7,8 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement.Absolute.aligned
+import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
@@ -15,13 +17,16 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.InspectableModifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -60,6 +65,7 @@ class MainActivity : ComponentActivity() {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
     val moviesResource by viewModel.orderedMoviesFlow.collectAsState(initial = Resource.Loading)
@@ -72,14 +78,14 @@ fun HomeScreen(viewModel: HomeViewModel) {
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(text = stringResource(R.string.home_screen_title),
-                            Modifier.fillMaxWidth())
+                        Text(text = stringResource(R.string.home_screen_title))
                     },
                     actions = {
                         SortDialog(viewModel)
-                    }
+                    },
+                    elevation = 0.dp
                 )
-            }
+            },
         ) {
             Box(Modifier.padding(it)) {
                 HomeScreenTabLayout(moviesResource, showsResource)
@@ -146,6 +152,14 @@ fun SortDialog(viewModel: HomeViewModel) {
                                 style = MaterialTheme.typography.body1.merge(),
                                 modifier = Modifier.padding(start = SORT_MENU_OPTION_HORIZONTAL_PADDING)
                             )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                imageVector = when (orderProperty) {
+                                    Order.Property.Name -> Icons.Default.SortByAlpha
+                                    Order.Property.RELEASE_DATE -> Icons.Default.Schedule
+                                },
+                                contentDescription = null,
+                            )
                         }
                     }
 
@@ -175,6 +189,14 @@ fun SortDialog(viewModel: HomeViewModel) {
                                 text = orderProperty.label,
                                 style = MaterialTheme.typography.body1.merge(),
                                 modifier = Modifier.padding(start = SORT_MENU_OPTION_TEXT_START_PADDING)
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                imageVector = when (orderProperty) {
+                                    Order.Type.ASCENDING -> Icons.Default.ArrowDownward
+                                    Order.Type.DESCENDING -> Icons.Default.ArrowUpward
+                                },
+                                contentDescription = null,
                             )
                         }
                     }
@@ -208,7 +230,7 @@ fun HomeScreenTabLayout(
         ) {
             tabs.forEachIndexed { index, tab ->
                 Tab(
-                    text = { Text(getLabelForTab(tab)) },
+                    text = { LabelForTab(tab) },
                     selected = pagerState.currentPage == index,
                     onClick = {
                         rememberCoroutineScope.launch {
@@ -241,9 +263,21 @@ private fun getTestTagForTab(tab: MainActivity.Tab) = when (tab) {
 }
 
 @Composable
-fun getLabelForTab(tab: MainActivity.Tab): String = when (tab) {
-    MainActivity.Tab.Movies -> stringResource(id = R.string.movies_tab_label)
-    MainActivity.Tab.Shows -> stringResource(id = R.string.shows_tab_label)
+fun LabelForTab(tab: MainActivity.Tab) {
+    val (stringResource, icon) = when (tab) {
+        MainActivity.Tab.Movies -> Pair(stringResource(id = R.string.movies_tab_label),
+            Icons.Default.Movie)
+        MainActivity.Tab.Shows -> Pair(stringResource(id = R.string.shows_tab_label),
+            Icons.Default.Tv)
+    }
+
+    Row(
+        horizontalArrangement = spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(icon, contentDescription = null)
+        Text(text = stringResource)
+    }
 }
 
 @Composable

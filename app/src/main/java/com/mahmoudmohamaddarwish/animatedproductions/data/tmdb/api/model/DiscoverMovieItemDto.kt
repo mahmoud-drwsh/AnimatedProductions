@@ -30,9 +30,10 @@ data class DiscoverMovieItemDto(
 ) {
     companion object {
         fun DiscoverMovieItemDto.toProduction(): Production = Production(
+            id = id,
+            type = Production.ProductionType.MOVIE,
             backdropPath = getBackdropImageUrl(backdropPath),
             firstAirDate = releaseDate,
-            id = id,
             name = title,
             originalLanguage = originalLanguage,
             overview = overview,

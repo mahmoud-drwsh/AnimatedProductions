@@ -34,7 +34,7 @@ the desired state representation object to the root Composable, I have the UI st
 test.
 
 Since I have background operations that sometimes need to be waited for to be finished before the
-test can start, I have applied the concept of an idlingResource object which is used by the Compose
+test can start, I have applied the concept of an IdlingResource object which is used by the Compose
 testing framework to pause the test while the background operation is still being executed.
 
 It is crucial to keep in mind that Compose differs from the view UI system even though there might

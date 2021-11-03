@@ -32,9 +32,10 @@ data class DiscoverTVItemDto(
 ) {
     companion object {
         fun DiscoverTVItemDto.toProduction(): Production = Production(
+            id = id,
+            type = Production.ProductionType.SHOW,
             backdropPath = getBackdropImageUrl(backdropPath),
             firstAirDate = firstAirDate,
-            id = id,
             name = name,
             originalLanguage = originalLanguage,
             overview = overview,
