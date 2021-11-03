@@ -14,11 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AnimatedProductions"
         tools:ignore="AllowBackup">
+
         <activity
             android:name=".screens.moviedetails.ProductionDetailsActivity"
             android:exported="false"
             android:label="@string/title_activity_movie_details"
             android:theme="@style/Theme.AnimatedProductions.NoActionBar" />
+
         <activity
             android:name=".screens.home.MainActivity"
             android:exported="true"

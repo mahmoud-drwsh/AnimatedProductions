@@ -1,13 +1,10 @@
 package com.mahmoudmohamaddarwish.animatedproductions.screens.home
 
-import android.content.res.Resources
 import androidx.activity.viewModels
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
-import com.mahmoudmohamaddarwish.animatedproductions.screens.IDLING_RESOURCE_TIMEOUT
 import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DETAILS_ROOT_COMPOSABLE_TEST_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -16,7 +13,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import javax.inject.Inject
 
 
 @ExperimentalCoroutinesApi
@@ -65,7 +61,7 @@ class MainActivitySuccessStatesTest {
     @Test
     fun app_shows_movies_list_after_success_state() {
         composeTestRule.run {
-            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
+            registerIdlingResource(HomeIdlingResource)
 
             // click on the movies tab to show the movies list
             onNodeWithTag(MAIN_ACTIVITY_MOVIES_TAB_TEST_TAG).performClick()
@@ -77,7 +73,7 @@ class MainActivitySuccessStatesTest {
     @Test
     fun app_shows_tv_shows_list_after_success_state() {
         composeTestRule.run {
-            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
+            registerIdlingResource(HomeIdlingResource)
 
             // click on the Shows tab to show the TV shows list
             onNodeWithTag(MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG).performClick()
@@ -89,7 +85,7 @@ class MainActivitySuccessStatesTest {
     @Test
     fun app_navigates_to_tv_show_details_after_success_state() {
         composeTestRule.run {
-            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
+            registerIdlingResource(HomeIdlingResource)
 
             // click on the shows tab
             onNodeWithTag(MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG).performClick()
@@ -110,7 +106,7 @@ class MainActivitySuccessStatesTest {
     @Test
     fun app_navigates_to_movie_details_after_success_state() {
         composeTestRule.run {
-            waitUntil(IDLING_RESOURCE_TIMEOUT) { MainActivityIdlingResource.isIdle }
+            registerIdlingResource(HomeIdlingResource)
 
             onNodeWithTag(MAIN_ACTIVITY_MOVIES_TAB_TEST_TAG).performClick()
 
@@ -155,4 +151,6 @@ class MainActivitySuccessStatesTest {
             onNodeWithText(Order.Type.DESCENDING.label).assertIsDisplayed()
         }
     }
+
 }
+
