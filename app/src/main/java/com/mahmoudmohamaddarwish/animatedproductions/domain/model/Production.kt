@@ -1,15 +1,11 @@
 package com.mahmoudmohamaddarwish.animatedproductions.domain.model
 
 import android.os.Parcelable
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import com.mahmoudmohamaddarwish.animatedproductions.data.room.Constants.ID_COL_NAME
 import kotlinx.parcelize.Parcelize
 
-@Entity(primaryKeys = [ID_COL_NAME])
 @Parcelize
 data class Production(
-    @ColumnInfo(name = ID_COL_NAME) val id: Int = 0,
+    val id: Int = 0,
     val type: ProductionType,
     val backdropPath: String = "",
     val firstAirDate: String = "",

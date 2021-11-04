@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.mahmoudmohamaddarwish.animatedproductions.di.CoroutinesScopesModule
 import com.mahmoudmohamaddarwish.animatedproductions.data.datastore.Constants
+import com.mahmoudmohamaddarwish.animatedproductions.di.CoroutinesScopesModule.ApplicationScope
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderUseCase
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +21,7 @@ import javax.inject.Singleton
 @Singleton
 class OrderRepo @Inject constructor(
     private val dataStore: DataStore<Preferences>,
-    @CoroutinesScopesModule.ApplicationScope private val appCoroutineScope: CoroutineScope,
+    @ApplicationScope private val appCoroutineScope: CoroutineScope,
 ) : OrderUseCase {
 
     override val order: Flow<Order> = dataStore.data.map { preferences ->

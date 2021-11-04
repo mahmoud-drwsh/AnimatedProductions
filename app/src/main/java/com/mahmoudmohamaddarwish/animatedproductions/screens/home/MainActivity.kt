@@ -97,7 +97,7 @@ fun updateIdlingResourceStatus(
     moviesResource: Resource<List<Production>>,
     showsResource: Resource<List<Production>>,
 ) {
-    MainActivityLoadingState.doneLoadingMoviesAndShows =
+    MainActivityLoadingState.successfullyLoadedMoviesAndShows =
         moviesResource is Resource.Success && showsResource is Resource.Success
 }
 

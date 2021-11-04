@@ -18,7 +18,7 @@ class ProductionDetailsViewModelTest {
     }
 
     @Test
-    fun `production object loads after being passed to the viewModel`() = runBlocking {
+    fun productionObjectLoadsAfterBeingPassedToTheViewModel() = runBlocking {
         productionDetailsViewModel.loadProductionObject(Production.dummy)
 
         val firstSuccessStateResource = productionDetailsViewModel.productionObjectFlow.first {
@@ -29,7 +29,7 @@ class ProductionDetailsViewModelTest {
     }
 
     @Test
-    fun `error state emitted after passing null to the viewModel`() = runBlocking {
+    fun errorStateEmittedAfterPassingNullToTheViewModel() = runBlocking {
         productionDetailsViewModel.loadProductionObject(null)
 
         val firstErrorStateResourceEmitted = productionDetailsViewModel.productionObjectFlow.first {
@@ -43,7 +43,7 @@ class ProductionDetailsViewModelTest {
     }
 
     @Test
-    fun `loading state emitted first`() = runBlocking {
+    fun loadingStateEmittedFirst() = runBlocking {
         val first = productionDetailsViewModel.productionObjectFlow.first()
 
         assert(first is Resource.Loading)

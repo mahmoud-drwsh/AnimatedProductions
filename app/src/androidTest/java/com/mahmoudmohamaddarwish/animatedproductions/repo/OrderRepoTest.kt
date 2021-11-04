@@ -40,9 +40,8 @@ class OrderRepoTest {
     )
 
 
-    @Suppress("IllegalIdentifier")
     @Test
-    fun `Order objects are correctly saved and retrieved`() {
+    fun ensureOrderObjectsAreCorrectlySavedAndRetrieved() {
         orderObjects.forEach { order ->
             testInsertion(order)
         }

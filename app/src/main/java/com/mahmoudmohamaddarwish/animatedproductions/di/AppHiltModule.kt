@@ -4,17 +4,12 @@ import android.content.*
 import android.content.res.Resources
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.room.Room
 import com.mahmoudmohamaddarwish.animatedproductions.data.datastore.dataStore
-import com.mahmoudmohamaddarwish.animatedproductions.data.repos.FavoritesListRepo
 import com.mahmoudmohamaddarwish.animatedproductions.data.repos.ListMoviesAndShowsRepo
 import com.mahmoudmohamaddarwish.animatedproductions.data.repos.OrderedMoviesAndShowsRepo
-import com.mahmoudmohamaddarwish.animatedproductions.data.room.FavoritesDao
-import com.mahmoudmohamaddarwish.animatedproductions.data.room.FavoritesDb
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Constants
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Service
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.okHttpClient
-import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.FavoritesListUseCase
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.ListMoviesAndShowsUseCase
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderedMoviesAndShowsListsUseCase
 import dagger.Module
@@ -32,17 +27,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object AppHiltModule {
-
-    @Singleton
-    @Provides
-    fun provideDatabase(@ApplicationContext context: Context): FavoritesDb =
-        Room.databaseBuilder(context, FavoritesDb::class.java, "test").build()
-
-    @Singleton
-    @Provides
-    fun provideFavoritesDao(favoritesDb: FavoritesDb): FavoritesDao =
-        favoritesDb.favoritesDao()
-
 
     @Singleton
     @Provides
@@ -78,11 +62,6 @@ object AppHiltModule {
     @Provides
     fun provideListMoviesAndShowsUseCase(listMoviesAndShowsRepo: ListMoviesAndShowsRepo): ListMoviesAndShowsUseCase =
         listMoviesAndShowsRepo
-
-    @Singleton
-    @Provides
-    fun provideFavoritesListUseCaseUseCase(favoritesListRepo: FavoritesListRepo): FavoritesListUseCase =
-        favoritesListRepo
 
 
     @Singleton

@@ -30,18 +30,16 @@ class TMDBServiceTest {
     }
 
 
-    @Suppress("IllegalIdentifier")
     @Test
-    fun `ensure non-empty movies list is returned by the service`() = runBlocking {
+    fun ensureNonEmptyMoviesListIsReturnedByTheService() = runBlocking {
         val movies = service.getMovies()
 
         assert(movies.discoverMovieItemDtos.isNotEmpty())
     }
 
 
-    @Suppress("IllegalIdentifier")
     @Test
-    fun `ensure non-empty shows list is returned by the service`() = runBlocking {
+    fun ensureNonEmptyShowsListIsReturnedByTheService() = runBlocking {
         val movies = service.getShows()
 
         assert(movies.discoverTVItemDtos.isNotEmpty())
