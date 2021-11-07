@@ -36,6 +36,7 @@ import com.mahmoudmohamaddarwish.animatedproductions.screens.components.Centered
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CoilImage
 import com.mahmoudmohamaddarwish.animatedproductions.screens.favorites.FavoritesViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.*
+import com.mahmoudmohamaddarwish.animatedproductions.ui.theme3.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 
@@ -51,10 +52,11 @@ class ProductionDetailsActivity : ComponentActivity() {
         productionDetailsViewModel.loadProductionObject(getProductionObject())
 
         setContent {
-            val state by productionDetailsViewModel.productionObjectFlow.collectAsState(initial = Resource.Loading)
+            val detailsUIState by productionDetailsViewModel.productionObjectFlow
+                .collectAsState(initial = Resource.Loading)
 
-            AnimatedProductionsTheme {
-                DetailsScreen(state, navigateBack = { navigateUp() })
+            AppTheme {
+                DetailsScreen(detailsUIState = detailsUIState, navigateBack = { navigateUp() })
             }
         }
     }
@@ -79,20 +81,22 @@ fun DetailsScreen(
     detailsUIState: Resource<Production>,
     navigateBack: () -> Unit,
 ) = when (detailsUIState) {
-    is Resource.Error -> CenteredText(text = detailsUIState.message,
-        Modifier.testTag(DETAILS_ERROR_MESSAGE_TEST_TAG))
+    is Resource.Error -> CenteredText(
+        text = detailsUIState.message,
+        Modifier.testTag(DETAILS_ERROR_MESSAGE_TEST_TAG)
+    )
     is Resource.Loading -> CenteredLoadingMessageWithIndicator(
         Modifier.testTag(DETAILS_LOADING_INDICATOR_TEST_TAG)
     )
-    is Resource.Success -> DetailsScreenContent(
-        detailsUIState,
+    is Resource.Success -> DetailsScreenSuccessContent(
+        detailsUIState = detailsUIState,
         navigateBack = navigateBack
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DetailsScreenContent(
+private fun DetailsScreenSuccessContent(
     detailsUIState: Resource.Success<Production>,
     navigateBack: () -> Unit,
     favoritesViewModel: FavoritesViewModel = viewModel(),
@@ -105,137 +109,170 @@ private fun DetailsScreenContent(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(text = stringResource(R.string.production_details)) },
-                navigationIcon = {
-                    IconButton(onClick = { navigateBack() }) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = stringResource(R.string.navigate_back_button_desc)
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(
-                        onClick = {
-                            favoritesViewModel.toggleFavoriteStatus(detailsUIState.data,
-                                isProductionAFavorite)
-                        }
-                    ) {
-                        val icon =
-                            if (isProductionAFavorite) Icons.Default.Favorite
-                            else Icons.Default.FavoriteBorder
-
-                        Icon(icon, contentDescription = null)
-                    }
-                },
-                modifier = Modifier
-                    .padding(8.dp)
-                    .shadow(8.dp, RoundedCornerShape(8.dp))
+            ProductionDetailsAppBar(
+                navigateBack = navigateBack,
+                favoritesViewModel = favoritesViewModel,
+                detailsUIState = detailsUIState,
+                isProductionAFavorite = isProductionAFavorite
             )
         },
         modifier = Modifier.testTag(DETAILS_ROOT_COMPOSABLE_TEST_TAG)
     ) { paddingValues ->
-        ProductionDetails(paddingValues, detailsUIState)
+        ProductionDetailsSuccessScaffoldContent(paddingValues, detailsUIState)
     }
 }
 
 @Composable
-private fun ProductionDetails(
+private fun ProductionDetailsAppBar(
+    navigateBack: () -> Unit,
+    favoritesViewModel: FavoritesViewModel,
+    detailsUIState: Resource.Success<Production>,
+    isProductionAFavorite: Boolean,
+) {
+    CenterAlignedTopAppBar(
+        title = { Text(text = stringResource(R.string.production_details)) },
+        navigationIcon = {
+            IconButton(onClick = { navigateBack() }) {
+                Icon(
+                    Icons.Default.ArrowBack,
+                    contentDescription = stringResource(R.string.navigate_back_button_desc)
+                )
+            }
+        },
+        actions = {
+            IconButton(
+                onClick = {
+                    favoritesViewModel.toggleFavoriteStatus(detailsUIState.data,
+                        isProductionAFavorite)
+                }
+            ) {
+                val icon =
+                    if (isProductionAFavorite) Icons.Default.Favorite
+                    else Icons.Default.FavoriteBorder
+
+                Icon(
+                    imageVector = icon,
+                    contentDescription = stringResource(R.string.toggle_favorite_state_desc)
+                )
+            }
+        },
+        modifier = Modifier
+            .padding(8.dp)
+            .shadow(8.dp, RoundedCornerShape(8.dp))
+    )
+}
+
+@Composable
+private fun ProductionDetailsSuccessScaffoldContent(
     paddingValues: PaddingValues,
     detailsUIState: Resource.Success<Production>,
 ) {
-    Box(
-        Modifier.padding(paddingValues)
+    Column(
+        Modifier
+            .padding(paddingValues)
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = spacedBy(DETAILS_CARD_COLUMN_SPACED_BY),
     ) {
+        CoilImage(url = detailsUIState.data.backdropPath,
+            imageDescription = stringResource(R.string.backdrop_image_description),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(BACKDROP_HEIGHT)
+                .padding(horizontal = 8.dp)
+                .testTag(DETAILS_BACKDROP_IMAGE_TEST_TAG))
+
         Column(
             Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = spacedBy(DETAILS_CARD_COLUMN_SPACED_BY),
+                .padding(DETAILS_CONTENT_LOWER_PART_PADDING),
+            verticalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_COLUMN_SPACE_BY),
         ) {
-            CoilImage(url = detailsUIState.data.backdropPath,
-                imageDescription = stringResource(R.string.backdrop_image_description),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(BACKDROP_HEIGHT)
-                    .testTag(DETAILS_BACKDROP_IMAGE_TEST_TAG))
-
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(DETAILS_CONTENT_LOWER_PART_PADDING),
-                verticalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_COLUMN_SPACE_BY),
+            Row(
+                horizontalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_PADDING),
             ) {
-                Row(
-                    horizontalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_PADDING),
+                CoilImage(
+                    url = detailsUIState.data.posterPath,
+                    imageDescription = stringResource(R.string.poster_image_description),
+                    Modifier
+                        .width(DETAILS_POSTER_IMAGE_WIDTH)
+                        .testTag(DETAILS_POSTER_IMAGE_TEST_TAG)
+                )
+
+                Column(
+                    verticalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_PADDING),
                 ) {
-                    CoilImage(
-                        url = detailsUIState.data.posterPath,
-                        imageDescription = stringResource(R.string.poster_image_description),
-                        Modifier
-                            .width(DETAILS_POSTER_IMAGE_WIDTH)
-                            .testTag(DETAILS_POSTER_IMAGE_TEST_TAG)
+                    Text(
+                        text = detailsUIState.data.name,
+                        style = MaterialTheme.typography.h5,
+                        modifier = Modifier.testTag(DETAILS_TITLE_TEXT_TEST_TAG),
                     )
 
-                    Column(
-                        verticalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_PADDING),
-                    ) {
-                        Text(
-                            text = detailsUIState.data.name,
-                            style = MaterialTheme.typography.h5,
-                            modifier = Modifier.testTag(DETAILS_TITLE_TEXT_TEST_TAG),
-                        )
+                    Text(
+                        text = detailsUIState.data.firstAirDate,
+                        style = MaterialTheme.typography.subtitle1,
+                    )
+                }
+            }
 
-                        Text(
-                            text = detailsUIState.data.firstAirDate,
-                            style = MaterialTheme.typography.subtitle1,
-                        )
+            Surface(Modifier.shadow(8.dp, RoundedCornerShape(8.dp))) {
+                Column(verticalArrangement = spacedBy(8.dp),
+                modifier = Modifier.padding(8.dp)) {
+                    Text(
+                        text = "Overview",
+                        style = MaterialTheme.typography.h6,
+                        modifier = Modifier
+                            .testTag(DETAILS_OVERVIEW_TEXT_TEST_TAG)
+                            .padding(horizontal = 8.dp)
+                    )
+
+                    Text(
+                        text = detailsUIState.data.overview,
+                        style = MaterialTheme.typography.body1,
+                        modifier = Modifier
+                            .testTag(DETAILS_OVERVIEW_TEXT_TEST_TAG)
+                            .padding(horizontal = 8.dp)
+                    )
+                }
+            }
+
+            Divider(Modifier.fillMaxWidth())
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = spacedBy(DETAILS_TEXT_AND_ICON_SPACE_BY),
+                    ) {
+                        Text(text = detailsUIState.data.voteAverage.toString())
+                        Icon(Icons.Default.Star,
+                            contentDescription = stringResource(R.string.vote_average_star_icon_desc))
                     }
+                    Text(
+                        text = stringResource(id = R.string.votes_with_number,
+                            detailsUIState.data.voteCount)
+                    )
                 }
 
-                Text(text = detailsUIState.data.overview,
-                    style = MaterialTheme.typography.body1,
-                    modifier = Modifier.testTag(DETAILS_OVERVIEW_TEXT_TEST_TAG))
-
-                Divider(Modifier.fillMaxWidth())
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = spacedBy(DETAILS_TEXT_AND_ICON_SPACE_BY),
-                        ) {
-                            Text(text = detailsUIState.data.voteAverage.toString())
-                            Icon(Icons.Default.Star,
-                                contentDescription = stringResource(R.string.vote_average_star_icon_desc))
-                        }
-                        Text(
-                            text = stringResource(id = R.string.votes_with_number,
-                                detailsUIState.data.voteCount)
-                        )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = spacedBy(DETAILS_TEXT_AND_ICON_SPACE_BY),
+                    ) {
+                        Text(text = detailsUIState.data.originalLanguage.uppercase())
+                        Icon(Icons.Default.Language,
+                            contentDescription = stringResource(R.string.production_language_icon_desc))
                     }
+                    Text(text = stringResource(R.string.original_language))
+                }
 
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = spacedBy(DETAILS_TEXT_AND_ICON_SPACE_BY),
-                        ) {
-                            Text(text = detailsUIState.data.originalLanguage.uppercase())
-                            Icon(Icons.Default.Language,
-                                contentDescription = stringResource(R.string.production_language_icon_desc))
-                        }
-                        Text(text = stringResource(R.string.original_language))
-                    }
-
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = detailsUIState.data.popularity.toString())
-                        Text(text = stringResource(R.string.popularity))
-                    }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = detailsUIState.data.popularity.toString())
+                    Text(text = stringResource(R.string.popularity))
                 }
             }
         }

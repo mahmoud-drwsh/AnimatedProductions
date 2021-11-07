@@ -49,7 +49,7 @@ class ListMoviesAndShowsRepo @Inject constructor(
 
         val shows = service.getShows().discoverTVItemDtos
             .filter(removeProductionsWithoutImages)
-            .filter { it.name.contains("family guy", ignoreCase = true) }
+            .filterNot { it.name.contains("family guy", ignoreCase = true) }
             .map { it.toProduction() }
 
         emit(Resource.Success(shows))

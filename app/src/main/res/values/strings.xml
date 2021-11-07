@@ -18,4 +18,5 @@
     <string name="navigate_back_button_desc">navigate back button</string>
     <string name="favorite_movies">Favorite Movies</string>
     <string name="favorite_shows">Favorite Shows</string>
+    <string name="toggle_favorite_state_desc">toggle favorite state icon</string>
 </resources>

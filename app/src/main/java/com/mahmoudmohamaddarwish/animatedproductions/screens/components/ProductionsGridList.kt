@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
@@ -19,7 +20,6 @@ import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MAIN_ACTIVITY_
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.PRODUCTIONS_GRID_CELLS_NUMBER
 import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.ProductionDetailsActivity.Companion.navigateToDetails
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.POSTER_IMAGE_HEIGHT
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.PRODUCTIONS_GRID_CONTENT_PADDING
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.PRODUCTION_POSTER_IMAGE_PADDING
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -29,7 +29,7 @@ fun ProductionsGridList(resource: Resource.Success<List<Production>>, testTag: S
 
     LazyVerticalGrid(
         cells = GridCells.Fixed(PRODUCTIONS_GRID_CELLS_NUMBER),
-        contentPadding = PaddingValues(PRODUCTIONS_GRID_CONTENT_PADDING),
+        contentPadding = PaddingValues(top = 0.dp, start = 4.dp, end = 4.dp, bottom = 4.dp),
         modifier = Modifier.testTag(testTag)
     ) {
         items(resource.data) { production ->
