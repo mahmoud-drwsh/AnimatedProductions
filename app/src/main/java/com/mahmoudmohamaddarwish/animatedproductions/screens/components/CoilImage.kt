@@ -1,10 +1,8 @@
-package com.mahmoudmohamaddarwish.animatedproductions.ui.components
+package com.mahmoudmohamaddarwish.animatedproductions.screens.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface

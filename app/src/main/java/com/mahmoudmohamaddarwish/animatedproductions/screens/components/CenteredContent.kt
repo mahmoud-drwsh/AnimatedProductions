@@ -1,4 +1,4 @@
-package com.mahmoudmohamaddarwish.animatedproductions.ui.components
+package com.mahmoudmohamaddarwish.animatedproductions.screens.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

@@ -1,6 +1,6 @@
 package com.mahmoudmohamaddarwish.animatedproductions.di
 
-import android.content.*
+import android.content.Context
 import android.content.res.Resources
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -36,7 +36,9 @@ object AppHiltModule {
     @Singleton
     @Provides
     fun provideDatabase(@ApplicationContext context: Context): FavoritesDb =
-        Room.databaseBuilder(context, FavoritesDb::class.java, "test").build()
+        Room.databaseBuilder(context, FavoritesDb::class.java, "test")
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Singleton
     @Provides

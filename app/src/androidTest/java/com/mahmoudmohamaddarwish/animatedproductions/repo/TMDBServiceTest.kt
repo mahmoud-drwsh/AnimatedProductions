@@ -2,7 +2,6 @@ package com.mahmoudmohamaddarwish.animatedproductions.repo
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Service
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getPosterImageUrl
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,20 +29,28 @@ class TMDBServiceTest {
     }
 
 
-    @Suppress("IllegalIdentifier")
     @Test
-    fun `ensure non-empty movies list is returned by the service`() = runBlocking {
+    fun ensureNonEmptyMoviesListIsReturnedByTheService() = runBlocking {
         val movies = service.getMovies()
 
         assert(movies.discoverMovieItemDtos.isNotEmpty())
     }
 
 
-    @Suppress("IllegalIdentifier")
     @Test
-    fun `ensure non-empty shows list is returned by the service`() = runBlocking {
+    fun ensureNonEmptyDreamWorksMoviesListIsReturnedByTheService() = runBlocking {
+        val movies = service.getMoviesDreamWorks()
+
+        assert(movies.items.isNotEmpty())
+    }
+
+
+    @Test
+    fun ensureNonEmptyShowsListIsReturnedByTheService() = runBlocking {
         val movies = service.getShows()
 
         assert(movies.discoverTVItemDtos.isNotEmpty())
     }
 }
+
+private const val TAG = "TMDBServiceTest"

@@ -1,4 +1,4 @@
-package com.mahmoudmohamaddarwish.animatedproductions.ui.components
+package com.mahmoudmohamaddarwish.animatedproductions.screens.components
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable

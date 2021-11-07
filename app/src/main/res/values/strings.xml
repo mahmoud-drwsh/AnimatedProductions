@@ -16,4 +16,6 @@
     <string name="popularity">Popularity</string>
     <string name="production_details">Production Details</string>
     <string name="navigate_back_button_desc">navigate back button</string>
+    <string name="favorite_movies">Favorite Movies</string>
+    <string name="favorite_shows">Favorite Shows</string>
 </resources>

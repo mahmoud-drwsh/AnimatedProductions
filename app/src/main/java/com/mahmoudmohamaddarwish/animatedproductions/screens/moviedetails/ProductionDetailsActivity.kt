@@ -27,9 +27,9 @@ import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
 import com.mahmoudmohamaddarwish.animatedproductions.navigateUp
-import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredLoadingMessageWithIndicator
-import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CenteredText
-import com.mahmoudmohamaddarwish.animatedproductions.ui.components.CoilImage
+import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredLoadingMessageWithIndicator
+import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredText
+import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CoilImage
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.*
 
 
@@ -198,7 +198,7 @@ private fun ProductionDetailsContent(detailsUIState: Production) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewDetails() {
-    DetailsScreen(detailsUIState = Resource.Success(Production.dummy)) {}
+    DetailsScreen(detailsUIState = Resource.Success(Production.movieDummy)) {}
 }
 
 @Preview(showBackground = true)

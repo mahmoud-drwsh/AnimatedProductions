@@ -1,6 +1,5 @@
 package com.mahmoudmohamaddarwish.animatedproductions.screens.home
 
-import androidx.activity.viewModels
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -8,6 +7,7 @@ import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
 import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DETAILS_ROOT_COMPOSABLE_TEST_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import junit.framework.Assert.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
@@ -31,9 +31,7 @@ class MainActivitySuccessStatesTest {
         hiltRule.inject()
 
         composeTestRule.setContent {
-            val homeViewModel by composeTestRule.activity.viewModels<HomeViewModel>()
-
-            HomeScreen(homeViewModel)
+            fail()
         }
     }
 

@@ -31,9 +31,8 @@ class ListMoviesAndShowsRepoTest {
     }
 
 
-    @Suppress("IllegalIdentifier")
     @Test
-    fun `ensure Loading is emitted first by the movies flow`() = runBlocking {
+    fun ensureLoadingStateIsEmittedFirstByTheMoviesFlow() = runBlocking {
         val moviesFlow = listMoviesAndShowsRepo.moviesFlow
 
         val firstEmittedValue = moviesFlow.first()
@@ -42,9 +41,8 @@ class ListMoviesAndShowsRepoTest {
     }
 
 
-    @Suppress("IllegalIdentifier")
     @Test
-    fun `ensure Loading is emitted first by the shows flow`() = runBlocking {
+    fun ensureLoadingStateIsEmittedFirstByTheShowsFlow() = runBlocking {
         val moviesFlow = listMoviesAndShowsRepo.showsFlow
 
         val firstEmittedValue = moviesFlow.first()
@@ -53,9 +51,8 @@ class ListMoviesAndShowsRepoTest {
     }
 
 
-    @Suppress("IllegalIdentifier")
     @Test
-    fun `ensure valid movie objects are returned by the service`() = runBlocking {
+    fun ensureValidMovieObjectsAreReturnedByTheService() = runBlocking {
         val moviesFlow = listMoviesAndShowsRepo.moviesFlow
 
         val firstSuccessEmitted = moviesFlow.first { it is Resource.Success } as Resource.Success
@@ -67,9 +64,8 @@ class ListMoviesAndShowsRepoTest {
     }
 
 
-    @Suppress("IllegalIdentifier")
     @Test
-    fun `ensure valid TV show objects are returned by the service`() = runBlocking {
+    fun ensureValidTVShowObjectsAreReturnedByTheService() = runBlocking {
         val moviesFlow = listMoviesAndShowsRepo.showsFlow
 
         val firstSuccessEmitted = moviesFlow.first { it is Resource.Success } as Resource.Success

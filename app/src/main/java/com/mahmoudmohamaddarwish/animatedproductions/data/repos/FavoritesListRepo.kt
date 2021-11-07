@@ -6,7 +6,6 @@ import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.FavoritesListUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -18,15 +17,30 @@ class FavoritesListRepo @Inject constructor(
     private val dao: FavoritesDao,
 ) : FavoritesListUseCase {
 
-    override val favoritesFlow: Flow<Resource<List<Production>>> =
+    override val favoriteMoviesFlow: Flow<Resource<List<Production>>> =
         channelFlow {
             send(Resource.Loading)
-            dao.getFavorites().collect {
+            dao.getFavoriteMovies().collect {
                 send(Resource.Success(it))
             }.runCatching {
                 send(Resource.Error("Unknown error"))
             }
         }
+
+
+    override val favoriteShowsFlow: Flow<Resource<List<Production>>> =
+        channelFlow {
+            send(Resource.Loading)
+            dao.getFavoriteShows().collect {
+                send(Resource.Success(it))
+            }.runCatching {
+                send(Resource.Error("Unknown error"))
+            }
+        }
+
+    override fun deleteAll() {
+        dao.deleteAll()
+    }
 
     override suspend fun addFavorite(production: Production) = dao.insertFavorite(production)
 

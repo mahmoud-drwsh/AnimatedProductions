@@ -27,7 +27,7 @@ class DetailsActivitySuccessStatesTest {
     @Before
     fun setup() {
         composeTestRule.setContent {
-            DetailsScreen(detailsUIState = Resource.Success(Production.dummy)) {}
+            DetailsScreen(detailsUIState = Resource.Success(Production.movieDummy)) {}
         }
     }
 

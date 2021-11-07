@@ -1,11 +1,13 @@
 package com.mahmoudmohamaddarwish.animatedproductions.screens.home
 
-import androidx.compose.ui.test.*
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.mahmoudmohamaddarwish.animatedproductions.Resource
-import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import junit.framework.Assert.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
@@ -18,16 +20,13 @@ import org.junit.runner.RunWith
 @HiltAndroidTest
 class MainActivityFailureStatesTest {
 
-    @get:Rule
-    var composeTestRule = createComposeRule()
-
     @Before
     fun setup() {
-        composeTestRule.setContent {
-            HomeScreenTabLayout(moviesResource = Resource.Error(MOVIES_ERROR_MESSAGE),
-                showsResource = Resource.Error(SHOWS_ERROR_MESSAGE))
-        }
+        fail()
     }
+
+    @get:Rule
+    var composeTestRule = createComposeRule()
 
     @Test
     fun app_displays_movies_error_message() {
