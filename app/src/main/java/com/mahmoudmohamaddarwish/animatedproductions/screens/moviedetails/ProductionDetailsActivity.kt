@@ -9,20 +9,24 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
@@ -30,25 +34,27 @@ import com.mahmoudmohamaddarwish.animatedproductions.navigateUp
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredLoadingMessageWithIndicator
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredText
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CoilImage
+import com.mahmoudmohamaddarwish.animatedproductions.screens.favorites.FavoritesViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.*
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
 
 
+@AndroidEntryPoint
 class ProductionDetailsActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<ProductionDetailsViewModel>()
+    private val productionDetailsViewModel by viewModels<ProductionDetailsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.loadProductionObject(getProductionObject())
+        productionDetailsViewModel.loadProductionObject(getProductionObject())
 
         setContent {
-            val state by viewModel.productionObjectFlow.collectAsState(initial = Resource.Loading)
+            val state by productionDetailsViewModel.productionObjectFlow.collectAsState(initial = Resource.Loading)
 
             AnimatedProductionsTheme {
-                DetailsScreen(state) {
-                    navigateUp()
-                }
+                DetailsScreen(state, navigateBack = { navigateUp() })
             }
         }
     }
@@ -69,10 +75,37 @@ class ProductionDetailsActivity : ComponentActivity() {
 }
 
 @Composable
-fun DetailsScreen(detailsUIState: Resource<Production>, navigateBack: () -> Unit) {
+fun DetailsScreen(
+    detailsUIState: Resource<Production>,
+    navigateBack: () -> Unit,
+) = when (detailsUIState) {
+    is Resource.Error -> CenteredText(text = detailsUIState.message,
+        Modifier.testTag(DETAILS_ERROR_MESSAGE_TEST_TAG))
+    is Resource.Loading -> CenteredLoadingMessageWithIndicator(
+        Modifier.testTag(DETAILS_LOADING_INDICATOR_TEST_TAG)
+    )
+    is Resource.Success -> DetailsScreenContent(
+        detailsUIState,
+        navigateBack = navigateBack
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DetailsScreenContent(
+    detailsUIState: Resource.Success<Production>,
+    navigateBack: () -> Unit,
+    favoritesViewModel: FavoritesViewModel = viewModel(),
+) {
+    val isProductionAFavoriteFlow: Flow<Boolean> = remember {
+        favoritesViewModel.isProductionAFavorite(detailsUIState.data.id)
+    }
+
+    val isProductionAFavorite by isProductionAFavoriteFlow.collectAsState(initial = false)
+
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text(text = stringResource(R.string.production_details)) },
                 navigationIcon = {
                     IconButton(onClick = { navigateBack() }) {
@@ -81,134 +114,130 @@ fun DetailsScreen(detailsUIState: Resource<Production>, navigateBack: () -> Unit
                             contentDescription = stringResource(R.string.navigate_back_button_desc)
                         )
                     }
-                }
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            favoritesViewModel.toggleFavoriteStatus(detailsUIState.data,
+                                isProductionAFavorite)
+                        }
+                    ) {
+                        val icon =
+                            if (isProductionAFavorite) Icons.Default.Favorite
+                            else Icons.Default.FavoriteBorder
+
+                        Icon(icon, contentDescription = null)
+                    }
+                },
+                modifier = Modifier
+                    .padding(8.dp)
+                    .shadow(8.dp, RoundedCornerShape(8.dp))
             )
         },
         modifier = Modifier.testTag(DETAILS_ROOT_COMPOSABLE_TEST_TAG)
     ) { paddingValues ->
-        Box(
-            Modifier.padding(paddingValues)
-        ) {
-            when (detailsUIState) {
-                is Resource.Error -> CenteredText(text = detailsUIState.message, Modifier.testTag(
-                    DETAILS_ERROR_MESSAGE_TEST_TAG))
-                is Resource.Loading -> CenteredLoadingMessageWithIndicator(
-                    Modifier.testTag(DETAILS_LOADING_INDICATOR_TEST_TAG)
-                )
-                is Resource.Success -> ProductionDetailsContent(detailsUIState.data)
-            }
-        }
+        ProductionDetails(paddingValues, detailsUIState)
     }
 }
 
-
 @Composable
-private fun ProductionDetailsContent(detailsUIState: Production) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = spacedBy(DETAILS_CARD_COLUMN_SPACED_BY),
+private fun ProductionDetails(
+    paddingValues: PaddingValues,
+    detailsUIState: Resource.Success<Production>,
+) {
+    Box(
+        Modifier.padding(paddingValues)
     ) {
-        CoilImage(url = detailsUIState.backdropPath,
-            imageDescription = stringResource(R.string.backdrop_image_description),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(BACKDROP_HEIGHT)
-                .testTag(DETAILS_BACKDROP_IMAGE_TEST_TAG))
-
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(DETAILS_CONTENT_LOWER_PART_PADDING),
-            verticalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_COLUMN_SPACE_BY),
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = spacedBy(DETAILS_CARD_COLUMN_SPACED_BY),
         ) {
-            Row(
-                horizontalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_PADDING),
-            ) {
-                CoilImage(
-                    url = detailsUIState.posterPath,
-                    imageDescription = stringResource(R.string.poster_image_description),
-                    Modifier
-                        .width(DETAILS_POSTER_IMAGE_WIDTH)
-                        .testTag(DETAILS_POSTER_IMAGE_TEST_TAG)
-                )
+            CoilImage(url = detailsUIState.data.backdropPath,
+                imageDescription = stringResource(R.string.backdrop_image_description),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(BACKDROP_HEIGHT)
+                    .testTag(DETAILS_BACKDROP_IMAGE_TEST_TAG))
 
-                Column(
-                    verticalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_PADDING),
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(DETAILS_CONTENT_LOWER_PART_PADDING),
+                verticalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_COLUMN_SPACE_BY),
+            ) {
+                Row(
+                    horizontalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_PADDING),
                 ) {
-                    Text(
-                        text = detailsUIState.name, style = MaterialTheme.typography.h5,
-                        modifier = Modifier.testTag(DETAILS_TITLE_TEXT_TEST_TAG),
+                    CoilImage(
+                        url = detailsUIState.data.posterPath,
+                        imageDescription = stringResource(R.string.poster_image_description),
+                        Modifier
+                            .width(DETAILS_POSTER_IMAGE_WIDTH)
+                            .testTag(DETAILS_POSTER_IMAGE_TEST_TAG)
                     )
 
-                    Text(
-                        text = detailsUIState.firstAirDate,
-                        style = MaterialTheme.typography.subtitle1,
-                    )
-                }
-            }
-
-            Text(text = detailsUIState.overview, style = MaterialTheme.typography.body1,
-                modifier = Modifier.testTag(DETAILS_OVERVIEW_TEXT_TEST_TAG))
-
-            Divider(Modifier.fillMaxWidth())
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = spacedBy(DETAILS_TEXT_AND_ICON_SPACE_BY),
+                    Column(
+                        verticalArrangement = spacedBy(DETAILS_CONTENT_LOWER_PART_PADDING),
                     ) {
-                        Text(text = detailsUIState.voteAverage.toString())
-                        Icon(Icons.Default.Star,
-                            contentDescription = stringResource(R.string.vote_average_star_icon_desc))
+                        Text(
+                            text = detailsUIState.data.name,
+                            style = MaterialTheme.typography.h5,
+                            modifier = Modifier.testTag(DETAILS_TITLE_TEXT_TEST_TAG),
+                        )
+
+                        Text(
+                            text = detailsUIState.data.firstAirDate,
+                            style = MaterialTheme.typography.subtitle1,
+                        )
                     }
-                    Text(
-                        text = stringResource(id = R.string.votes_with_number,
-                            detailsUIState.voteCount)
-                    )
                 }
 
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = spacedBy(DETAILS_TEXT_AND_ICON_SPACE_BY),
-                    ) {
-                        Text(text = detailsUIState.originalLanguage.uppercase())
-                        Icon(Icons.Default.Language,
-                            contentDescription = stringResource(R.string.production_language_icon_desc))
-                    }
-                    Text(text = stringResource(R.string.original_language))
-                }
+                Text(text = detailsUIState.data.overview,
+                    style = MaterialTheme.typography.body1,
+                    modifier = Modifier.testTag(DETAILS_OVERVIEW_TEXT_TEST_TAG))
 
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = detailsUIState.popularity.toString())
-                    Text(text = stringResource(R.string.popularity))
+                Divider(Modifier.fillMaxWidth())
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = spacedBy(DETAILS_TEXT_AND_ICON_SPACE_BY),
+                        ) {
+                            Text(text = detailsUIState.data.voteAverage.toString())
+                            Icon(Icons.Default.Star,
+                                contentDescription = stringResource(R.string.vote_average_star_icon_desc))
+                        }
+                        Text(
+                            text = stringResource(id = R.string.votes_with_number,
+                                detailsUIState.data.voteCount)
+                        )
+                    }
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = spacedBy(DETAILS_TEXT_AND_ICON_SPACE_BY),
+                        ) {
+                            Text(text = detailsUIState.data.originalLanguage.uppercase())
+                            Icon(Icons.Default.Language,
+                                contentDescription = stringResource(R.string.production_language_icon_desc))
+                        }
+                        Text(text = stringResource(R.string.original_language))
+                    }
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = detailsUIState.data.popularity.toString())
+                        Text(text = stringResource(R.string.popularity))
+                    }
                 }
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewDetails() {
-    DetailsScreen(detailsUIState = Resource.Success(Production.movieDummy)) {}
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewDetailsLoading() {
-    DetailsScreen(detailsUIState = Resource.Loading) {}
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewDetailsError() {
-    DetailsScreen(detailsUIState = Resource.Error("TEST_ERROR_MESSAGE")) {}
 }

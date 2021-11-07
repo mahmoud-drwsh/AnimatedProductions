@@ -5,22 +5,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.mahmoudmohamaddarwish.animatedproductions.Resource
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
-import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredLoadingMessageWithIndicator
-import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredText
-import com.mahmoudmohamaddarwish.animatedproductions.screens.components.ProductionsGridList
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.component.MainAppBar
-import com.mahmoudmohamaddarwish.animatedproductions.screens.navigation.BottomNavigationDestination
-import com.mahmoudmohamaddarwish.animatedproductions.screens.navigation.MainNav
+import com.mahmoudmohamaddarwish.animatedproductions.screens.home.destinations.BottomNavigationDestination
+import com.mahmoudmohamaddarwish.animatedproductions.screens.home.destinations.BottomNavigationDestination.Companion.destinations
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -34,139 +31,49 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowsTabContent(
-    homeViewModel: HomeViewModel = hiltViewModel(),
-) {
-    val resource by homeViewModel.orderedShowsFlow.collectAsState(initial = Resource.Loading)
+fun MainNav(navController: NavHostController = rememberNavController()) {
+
+    val currentBackStackEntry by navController.currentBackStackEntryFlow.collectAsState(initial = null)
 
     Scaffold(
-        topBar = {
-            MainAppBar(BottomNavigationDestination.Shows.title)
-        }
-    ) { paddingValues ->
-        Box(Modifier.padding(paddingValues)) {
-            when (resource) {
-                is Resource.Error -> {
-                    val error = resource as Resource.Error
-                    CenteredText(text = error.message)
-                }
-
-                is Resource.Loading -> CenteredLoadingMessageWithIndicator(
-                    Modifier.testTag(MAIN_ACTIVITY_SHOWS_LOADING_INDICATOR_TEST_TAG)
-                )
-
-                is Resource.Success -> {
-                    val success = resource as Resource.Success<List<Production>>
-                    ProductionsGridList(success, MAIN_ACTIVITY_SHOWS_LIST_TEST_TAG)
+        bottomBar = {
+            NavigationBar {
+                destinations.forEach { destination ->
+                    NavigationBarItem(
+                        selected = currentBackStackEntry?.destination?.route == destination.route,
+                        onClick = {
+                            navController.navigate(destination.route) {
+                                launchSingleTop = true
+                            }
+                        },
+                        icon = { Icon(destination.icon, contentDescription = null) },
+                        label = destination.title
+                    )
                 }
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MoviesTabContent(
-    homeViewModel: HomeViewModel = hiltViewModel(),
-) {
-    val resource by homeViewModel.orderedMoviesFlow.collectAsState(initial = Resource.Loading)
-
-    Scaffold(
-        topBar = {
-            MainAppBar(BottomNavigationDestination.Movies.title)
-        }
     ) { paddingValues ->
-        Box(Modifier.padding(paddingValues)) {
-            when (resource) {
-                is Resource.Error -> {
-                    val error = resource as Resource.Error
-                    CenteredText(text = error.message)
-                }
 
-                is Resource.Loading -> CenteredLoadingMessageWithIndicator(
-                    Modifier.testTag(MAIN_ACTIVITY_MOVIES_LOADING_INDICATOR_TEST_TAG)
-                )
-
-                is Resource.Success -> {
-                    val success = resource as Resource.Success<List<Production>>
-                    ProductionsGridList(resource = success,
-                        testTag = MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG)
+        NavHost(
+            navController,
+            BottomNavigationDestination.Movies.route,
+            modifier = Modifier.padding(paddingValues)
+        ) {
+            destinations.forEach { destination ->
+                composable(route = destination.route) { stackEntry: NavBackStackEntry ->
+                    Scaffold(
+                        topBar = {
+                            MainAppBar(destination.title)
+                        }
+                    ) { paddingValues ->
+                        Box(Modifier.padding(paddingValues)) {
+                            destination.content(stackEntry)
+                        }
+                    }
                 }
             }
-
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun FavoriteMoviesTabContent(
-    homeViewModel: HomeViewModel = hiltViewModel(),
-) {
-    val resource by homeViewModel.orderedMoviesFlow.collectAsState(initial = Resource.Loading)
-
-    Scaffold(
-        topBar = {
-            MainAppBar(BottomNavigationDestination.FavoriteMovies.title)
-        }
-    ) { paddingValues ->
-        Box(Modifier.padding(paddingValues)) {
-            when (resource) {
-                is Resource.Error -> {
-                    val error = resource as Resource.Error
-                    CenteredText(text = error.message)
-                }
-
-                is Resource.Loading -> CenteredLoadingMessageWithIndicator(
-                    Modifier.testTag(MAIN_ACTIVITY_MOVIES_LOADING_INDICATOR_TEST_TAG)
-                )
-
-                is Resource.Success -> {
-                    val success = resource as Resource.Success<List<Production>>
-                    ProductionsGridList(resource = success,
-                        testTag = MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG)
-                }
-            }
-
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun FavoriteShowsTabContent(
-    homeViewModel: HomeViewModel = hiltViewModel(),
-) {
-    val resource by homeViewModel.orderedShowsFlow.collectAsState(initial = Resource.Loading)
-
-    Scaffold(
-        topBar = {
-            MainAppBar(BottomNavigationDestination.FavoriteMovies.title)
-        }
-    ) { paddingValues ->
-        Box(Modifier.padding(paddingValues)) {
-            when (resource) {
-                is Resource.Error -> {
-                    val error = resource as Resource.Error
-                    CenteredText(text = error.message)
-                }
-
-                is Resource.Loading -> CenteredLoadingMessageWithIndicator(
-                    Modifier.testTag(MAIN_ACTIVITY_MOVIES_LOADING_INDICATOR_TEST_TAG)
-                )
-
-                is Resource.Success -> {
-                    val success = resource as Resource.Success<List<Production>>
-                    ProductionsGridList(resource = success,
-                        testTag = MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG)
-                }
-            }
-
         }
     }
 }

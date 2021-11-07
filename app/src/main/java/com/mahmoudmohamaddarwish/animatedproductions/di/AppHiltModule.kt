@@ -6,7 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.room.Room
 import com.mahmoudmohamaddarwish.animatedproductions.data.datastore.dataStore
-import com.mahmoudmohamaddarwish.animatedproductions.data.repos.FavoritesListRepo
+import com.mahmoudmohamaddarwish.animatedproductions.data.repos.OrderedFavoritesListRepo
 import com.mahmoudmohamaddarwish.animatedproductions.data.repos.ListMoviesAndShowsRepo
 import com.mahmoudmohamaddarwish.animatedproductions.data.repos.OrderedMoviesAndShowsRepo
 import com.mahmoudmohamaddarwish.animatedproductions.data.room.FavoritesDao
@@ -83,8 +83,8 @@ object AppHiltModule {
 
     @Singleton
     @Provides
-    fun provideFavoritesListUseCaseUseCase(favoritesListRepo: FavoritesListRepo): FavoritesListUseCase =
-        favoritesListRepo
+    fun provideFavoritesListUseCaseUseCase(orderedFavoritesListRepo: OrderedFavoritesListRepo): FavoritesListUseCase =
+        orderedFavoritesListRepo
 
 
     @Singleton

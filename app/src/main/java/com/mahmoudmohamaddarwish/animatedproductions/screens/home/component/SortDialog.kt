@@ -19,16 +19,17 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
-import com.mahmoudmohamaddarwish.animatedproductions.screens.home.HomeViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.MAIN_ACTIVITY_SORTING_ICON_BUTTON_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.home.viewmodels.ProductionsOrderViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.SORT_MENU_OPTION_HEIGHT
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.SORT_MENU_OPTION_HORIZONTAL_PADDING
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.SORT_MENU_OPTION_TEXT_START_PADDING
 
 @Composable
-fun SortDialog(viewModel: HomeViewModel) {
+fun SortDialog(viewModel: ProductionsOrderViewModel = hiltViewModel()) {
     var shown by remember { mutableStateOf(false) }
 
     val order by viewModel.order.collectAsState(initial = Order.default)

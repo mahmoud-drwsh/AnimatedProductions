@@ -7,14 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun MainAppBar(title: @Composable () -> Unit) {
     CenterAlignedTopAppBar(
         title = title,
         actions = {
-            SortDialog(viewModel = hiltViewModel())
+            SortDialog()
         },
         modifier = Modifier
             .padding(8.dp)

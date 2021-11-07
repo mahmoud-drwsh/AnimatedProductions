@@ -27,7 +27,8 @@ class DetailsActivityLoadingStatesTest {
     @Before
     fun setup() {
         composeTestRule.setContent {
-            DetailsScreen(detailsUIState = Resource.Loading) {}
+            DetailsScreen(detailsUIState = Resource.Loading
+            ) {}
         }
     }
 

@@ -30,3 +30,4 @@ class ProductionDetailsViewModel @Inject constructor() : ViewModel() {
         const val UNEXPECTED_ERROR_MESSAGE = "Unexpected error"
     }
 }
+

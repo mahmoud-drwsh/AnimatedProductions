@@ -26,7 +26,8 @@ class DetailsActivityErrorStatesTest {
     @Before
     fun setup() {
         composeTestRule.setContent {
-            DetailsScreen(detailsUIState = Resource.Error(TEST_ERROR_MESSAGE)) {}
+            DetailsScreen(detailsUIState = Resource.Error(TEST_ERROR_MESSAGE)
+            ) {}
         }
     }
 

@@ -21,7 +21,7 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class FavoritesListRepoTest {
+class OrderedFavoritesListRepoTest {
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)

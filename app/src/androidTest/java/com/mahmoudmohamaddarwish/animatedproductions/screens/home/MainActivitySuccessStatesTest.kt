@@ -2,13 +2,15 @@ package com.mahmoudmohamaddarwish.animatedproductions.screens.home
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
 import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DETAILS_ROOT_COMPOSABLE_TEST_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import junit.framework.Assert.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,9 +31,15 @@ class MainActivitySuccessStatesTest {
     @Before
     fun setup() {
         hiltRule.inject()
+    }
 
+    @Test
+    fun viewModelCreationTest() {
         composeTestRule.setContent {
-            fail()
+            val m: HomeViewModel = hiltViewModel()
+            runBlocking {
+                assert(m.orderedMoviesFlow.first() is Resource.Loading)
+            }
         }
     }
 
