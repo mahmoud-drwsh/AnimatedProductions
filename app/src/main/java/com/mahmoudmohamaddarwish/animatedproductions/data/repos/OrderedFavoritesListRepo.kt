@@ -4,8 +4,8 @@ import android.content.res.Resources
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.data.room.FavoritesDao
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Order
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.FavoritesListUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

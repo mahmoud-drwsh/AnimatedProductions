@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AnimatedProductions</string>
+    <string name="app_name">Animated Productions</string>
     <string name="loading">Loading</string>
     <string name="unexpected_error_message">Unexpected error</string>
     <string name="title_activity_movie_details">MovieDetails</string>

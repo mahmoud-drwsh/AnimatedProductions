@@ -1,8 +1,9 @@
 package com.mahmoudmohamaddarwish.animatedproductions.data.repos
 
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Order
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.remote.DiscoverTVItemDto
 
 
 fun Resource.Success<List<Production>>.sortProductions(order: Order): List<Production> {
@@ -27,3 +28,11 @@ fun sortProductionsContainedInSuccessState(
 } else {
     resource
 }
+
+
+fun List<Production>.removeProductionsWithoutImages() = filterNot { production ->
+    production.posterPath.isBlank() || production.backdropPath.isBlank()
+}
+
+fun profaneShowsSelector(discoverTVItemDto: DiscoverTVItemDto): Boolean =
+    discoverTVItemDto.name.contains("family guy", ignoreCase = true)

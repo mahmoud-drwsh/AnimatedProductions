@@ -1,7 +1,7 @@
 package com.mahmoudmohamaddarwish.animatedproductions.repo
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Order
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderUseCase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

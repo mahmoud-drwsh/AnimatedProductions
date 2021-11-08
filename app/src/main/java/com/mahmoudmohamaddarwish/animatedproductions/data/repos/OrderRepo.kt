@@ -4,10 +4,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import com.mahmoudmohamaddarwish.animatedproductions.di.CoroutinesScopesModule
 import com.mahmoudmohamaddarwish.animatedproductions.data.datastore.Constants
 import com.mahmoudmohamaddarwish.animatedproductions.di.CoroutinesScopesModule.ApplicationScope
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Order
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

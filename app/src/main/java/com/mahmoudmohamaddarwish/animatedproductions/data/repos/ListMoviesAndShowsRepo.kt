@@ -1,14 +1,14 @@
 package com.mahmoudmohamaddarwish.animatedproductions.data.repos
 
 import android.content.res.Resources
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.remote.DiscoverMovieItemDto.Companion.toProduction
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.remote.DiscoverTVItemDto.Companion.toProduction
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Service
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model.DiscoverMovieItemDto
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model.DiscoverMovieItemDto.Companion.toProduction
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model.DiscoverTVItemDto
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model.DiscoverTVItemDto.Companion.toProduction
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.ListMoviesAndShowsUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -22,16 +22,14 @@ class ListMoviesAndShowsRepo @Inject constructor(
     private val resources: Resources,
 ) : ListMoviesAndShowsUseCase {
 
-    @Suppress("UselessCallOnNotNull")
     override val moviesFlow: Flow<Resource<List<Production>>> = flow {
         emit(Resource.Loading)
 
-        val removeProductionsWithoutImages: (DiscoverMovieItemDto) -> Boolean = {
-            it.posterPath.isNullOrBlank().not() && it.backdropPath.isNullOrBlank().not()
-        }
 
-        val data = service.getMovies().discoverMovieItemDtos.filter(removeProductionsWithoutImages)
+        val data = service.getMovies()
+            .discoverMovieItemDtos
             .map { it.toProduction() }
+            .removeProductionsWithoutImages()
 
         emit(Resource.Success(data))
     }.catch { e ->
@@ -43,18 +41,93 @@ class ListMoviesAndShowsRepo @Inject constructor(
     override val showsFlow: Flow<Resource<List<Production>>> = flow {
         emit(Resource.Loading)
 
-        val removeProductionsWithoutImages: (DiscoverTVItemDto) -> Boolean = {
-            it.posterPath.isNullOrBlank().not() && it.backdropPath.isNullOrBlank().not()
-        }
-
         val shows = service.getShows().discoverTVItemDtos
-            .filter(removeProductionsWithoutImages)
             .filterNot { it.name.contains("family guy", ignoreCase = true) }
             .map { it.toProduction() }
+            .removeProductionsWithoutImages()
 
         emit(Resource.Success(shows))
     }.catch { e ->
         emit(Resource.Error(e.message
             ?: resources.getString(R.string.unexpected_error_message)))
+    }
+
+
+}
+
+class ShowsDataSource(
+    private val service: Service,
+) : PagingSource<Int, Production>() {
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Production> {
+        val page = params.key ?: 1
+
+        return try {
+
+            val data = service.getShows(page)
+
+            val productions: List<Production> = data.discoverTVItemDtos
+                .filterNot(::profaneShowsSelector)
+                .map { it.toProduction() }
+                .removeProductionsWithoutImages()
+
+            val prevKey = if (page == 1) null else page - 1
+            val nextKey = if (page >= data.totalPages) null else page + 1
+
+            LoadResult.Page(
+                data = productions,
+                prevKey = prevKey,
+                nextKey = nextKey
+            )
+        } catch (e: Exception) {
+            LoadResult.Error(IllegalStateException())
+        }
+    }
+
+
+    override fun getRefreshKey(state: PagingState<Int, Production>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+        }
+    }
+}
+
+
+class MoviesDataSource(
+    private val service: Service,
+) : PagingSource<Int, Production>() {
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Production> {
+        val page = params.key ?: 1
+
+        return try {
+
+            val data = service.getShows(page)
+
+            val productions: List<Production> = data.discoverTVItemDtos
+                .filterNot(::profaneShowsSelector)
+                .map { it.toProduction() }
+                .removeProductionsWithoutImages()
+
+            val prevKey = if (page == 1) null else page - 1
+            val nextKey = if (page >= data.totalPages) null else page + 1
+
+            LoadResult.Page(
+                data = productions,
+                prevKey = prevKey,
+                nextKey = nextKey
+            )
+        } catch (e: Exception) {
+            LoadResult.Error(e)
+        }
+    }
+
+
+    override fun getRefreshKey(state: PagingState<Int, Production>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+        }
     }
 }

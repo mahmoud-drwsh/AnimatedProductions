@@ -1,8 +1,8 @@
-package com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails
+package com.mahmoudmohamaddarwish.animatedproductions.screens.details
 
 import androidx.lifecycle.ViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

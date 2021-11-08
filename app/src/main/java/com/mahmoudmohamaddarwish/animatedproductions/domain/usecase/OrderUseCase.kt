@@ -1,6 +1,6 @@
 package com.mahmoudmohamaddarwish.animatedproductions.domain.usecase
 
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Order
 import kotlinx.coroutines.flow.Flow
 
 interface OrderUseCase {

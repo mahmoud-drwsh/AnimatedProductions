@@ -1,9 +1,9 @@
-package com.mahmoudmohamaddarwish.animatedproductions.screens.favorites
+package com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.di.CoroutinesScopesModule.ApplicationScope
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.FavoritesListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope

@@ -31,12 +31,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Order
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredLoadingMessageWithIndicator
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredText
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.ProductionsGridList
-import com.mahmoudmohamaddarwish.animatedproductions.screens.favorites.FavoritesViewModel
+import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.FavoritesViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.BottomNavigationDestinationModel.Companion.DESTINATION_MODELS
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.viewmodels.ProductionsOrderViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.viewmodels.ProductionsViewModel
@@ -112,8 +112,8 @@ private fun MainNavigationBottomBar(
 }
 
 @Composable
-fun ProductionsResourceFlowGrid(orderedMoviesFlow: Flow<Resource<List<Production>>>) {
-    val resource by orderedMoviesFlow.collectAsState(initial = Resource.Loading)
+fun ProductionsResourceFlowGrid(productionsFlow: Flow<Resource<List<Production>>>) {
+    val resource by productionsFlow.collectAsState(initial = Resource.Loading)
 
     when (resource) {
         is Resource.Error -> {
@@ -127,7 +127,7 @@ fun ProductionsResourceFlowGrid(orderedMoviesFlow: Flow<Resource<List<Production
 
         is Resource.Success -> {
             ProductionsGridList(
-                resource = resource as Resource.Success<List<Production>>,
+                list = (resource as Resource.Success<List<Production>>).data,
                 testTag = MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG
             )
         }

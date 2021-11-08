@@ -1,4 +1,4 @@
-package com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails
+package com.mahmoudmohamaddarwish.animatedproductions.screens.details
 
 import android.content.Context
 import android.content.Intent
@@ -26,15 +26,15 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
 import com.mahmoudmohamaddarwish.animatedproductions.navigateUp
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredLoadingMessageWithIndicator
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredText
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CoilImage
-import com.mahmoudmohamaddarwish.animatedproductions.screens.favorites.FavoritesViewModel
+import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.FavoritesViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.*
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme3.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -99,7 +99,7 @@ fun DetailsScreen(
 private fun DetailsScreenSuccessContent(
     detailsUIState: Resource.Success<Production>,
     navigateBack: () -> Unit,
-    favoritesViewModel: FavoritesViewModel = viewModel(),
+    favoritesViewModel: FavoritesViewModel = hiltViewModel(),
 ) {
     val isProductionAFavoriteFlow: Flow<Boolean> = remember {
         favoritesViewModel.isProductionAFavorite(detailsUIState.data.id)
@@ -118,7 +118,10 @@ private fun DetailsScreenSuccessContent(
         },
         modifier = Modifier.testTag(DETAILS_ROOT_COMPOSABLE_TEST_TAG)
     ) { paddingValues ->
-        ProductionDetailsSuccessScaffoldContent(paddingValues, detailsUIState)
+        ProductionDetailsSuccessScaffoldContent(
+            Modifier.padding(paddingValues),
+            detailsUIState
+        )
     }
 }
 
@@ -164,12 +167,11 @@ private fun ProductionDetailsAppBar(
 
 @Composable
 private fun ProductionDetailsSuccessScaffoldContent(
-    paddingValues: PaddingValues,
+    modifier: Modifier,
     detailsUIState: Resource.Success<Production>,
 ) {
     Column(
-        Modifier
-            .padding(paddingValues)
+        modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = spacedBy(DETAILS_CARD_COLUMN_SPACED_BY),
@@ -180,6 +182,7 @@ private fun ProductionDetailsSuccessScaffoldContent(
                 .fillMaxWidth()
                 .height(BACKDROP_HEIGHT)
                 .padding(horizontal = 8.dp)
+                .padding(top = 4.dp)
                 .testTag(DETAILS_BACKDROP_IMAGE_TEST_TAG))
 
         Column(
@@ -215,14 +218,18 @@ private fun ProductionDetailsSuccessScaffoldContent(
                 }
             }
 
-            Surface(Modifier.shadow(8.dp, RoundedCornerShape(8.dp))) {
-                Column(verticalArrangement = spacedBy(8.dp),
-                modifier = Modifier.padding(8.dp)) {
+            Surface(
+                modifier = Modifier
+                    .shadow(8.dp, RoundedCornerShape(8.dp))
+                    .testTag(DETAILS_OVERVIEW_TEXT_TEST_TAG)
+            ) {
+                Column(
+                    verticalArrangement = spacedBy(8.dp),
+                    modifier = Modifier.padding(8.dp)) {
                     Text(
                         text = "Overview",
                         style = MaterialTheme.typography.h6,
                         modifier = Modifier
-                            .testTag(DETAILS_OVERVIEW_TEXT_TEST_TAG)
                             .padding(horizontal = 8.dp)
                     )
 
@@ -230,7 +237,6 @@ private fun ProductionDetailsSuccessScaffoldContent(
                         text = detailsUIState.data.overview,
                         style = MaterialTheme.typography.body1,
                         modifier = Modifier
-                            .testTag(DETAILS_OVERVIEW_TEXT_TEST_TAG)
                             .padding(horizontal = 8.dp)
                     )
                 }
@@ -264,8 +270,10 @@ private fun ProductionDetailsSuccessScaffoldContent(
                         horizontalArrangement = spacedBy(DETAILS_TEXT_AND_ICON_SPACE_BY),
                     ) {
                         Text(text = detailsUIState.data.originalLanguage.uppercase())
-                        Icon(Icons.Default.Language,
-                            contentDescription = stringResource(R.string.production_language_icon_desc))
+                        Icon(
+                            imageVector = Icons.Default.Language,
+                            contentDescription = stringResource(R.string.production_language_icon_desc)
+                        )
                     }
                     Text(text = stringResource(R.string.original_language))
                 }

@@ -1,7 +1,7 @@
 package com.mahmoudmohamaddarwish.animatedproductions.data.room
 
 import androidx.room.*
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
 import kotlinx.coroutines.flow.Flow
 
 @Dao

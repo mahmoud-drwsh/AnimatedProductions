@@ -38,14 +38,6 @@ class TMDBServiceTest {
 
 
     @Test
-    fun ensureNonEmptyDreamWorksMoviesListIsReturnedByTheService() = runBlocking {
-        val movies = service.getMoviesDreamWorks()
-
-        assert(movies.items.isNotEmpty())
-    }
-
-
-    @Test
     fun ensureNonEmptyShowsListIsReturnedByTheService() = runBlocking {
         val movies = service.getShows()
 

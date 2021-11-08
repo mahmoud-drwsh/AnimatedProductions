@@ -5,11 +5,13 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
-import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DETAILS_ROOT_COMPOSABLE_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Order
+import com.mahmoudmohamaddarwish.animatedproductions.screens.details.DETAILS_ROOT_COMPOSABLE_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.home.viewmodels.ProductionsViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -36,7 +38,7 @@ class MainActivitySuccessStatesTest {
     @Test
     fun viewModelCreationTest() {
         composeTestRule.setContent {
-            val m: HomeViewModel = hiltViewModel()
+            val m: ProductionsViewModel = hiltViewModel()
             runBlocking {
                 assert(m.orderedMoviesFlow.first() is Resource.Loading)
             }

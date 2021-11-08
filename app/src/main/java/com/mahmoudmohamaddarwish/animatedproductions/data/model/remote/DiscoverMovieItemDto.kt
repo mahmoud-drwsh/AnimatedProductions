@@ -1,16 +1,16 @@
-package com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.model
+package com.mahmoudmohamaddarwish.animatedproductions.data.model.remote
 
 
 import com.google.gson.annotations.SerializedName
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getBackdropImageUrl
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getPosterImageUrl
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Production
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
 
 data class DiscoverMovieItemDto(
-    @SerializedName("backdrop_path")
-    val backdropPath: String = "",
     @SerializedName("id")
     val id: Int = 0,
+    @SerializedName("backdrop_path")
+    val backdropPath: String = "",
     @SerializedName("original_language")
     val originalLanguage: String = "",
     @SerializedName("overview")

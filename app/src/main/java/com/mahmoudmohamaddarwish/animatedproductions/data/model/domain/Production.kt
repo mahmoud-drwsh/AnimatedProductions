@@ -1,4 +1,4 @@
-package com.mahmoudmohamaddarwish.animatedproductions.domain.model
+package com.mahmoudmohamaddarwish.animatedproductions.data.model.domain
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo

@@ -1,4 +1,4 @@
-package com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails
+package com.mahmoudmohamaddarwish.animatedproductions.screens.details
 
 const val DETAILS_ROOT_COMPOSABLE_TEST_TAG = "details root composable test tag"
 

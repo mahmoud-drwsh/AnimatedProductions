@@ -1,7 +1,7 @@
 package com.mahmoudmohamaddarwish.animatedproductions.screens.home.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.mahmoudmohamaddarwish.animatedproductions.domain.model.Order
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Order
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

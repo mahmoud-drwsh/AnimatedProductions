@@ -1,4 +1,4 @@
-package com.mahmoudmohamaddarwish.animatedproductions.domain.model
+package com.mahmoudmohamaddarwish.animatedproductions.data.model.domain
 
 data class Order(
     val property: Property,

@@ -11,7 +11,7 @@ I have applied the concept of an IdlingResource object in this project, but due 
 
 --------------------------------------------------
 
-The following libraries were used in the writing of the app:
+The following libraries were used in the writing of the animatedProductionsApp:
 1. Jetpack Hilt (for dependency injection).
 2. Jetpack Compose (for the UI).
 3. Jetpack ViewModel.
@@ -27,7 +27,7 @@ The following libraries were used in the writing of the app:
 
 The Test Scenarios:
 
-For each of the screens, I have written 3 different collections of tests for the success, loading, and error states. I have been blessed with architecting the app in such a way that by providing the desired state representation object to the root Composable, I have the UI state that I want to test.
+For each of the screens, I have written 3 different collections of tests for the success, loading, and error states. I have been blessed with architecting the animatedProductionsApp in such a way that by providing the desired state representation object to the root Composable, I have the UI state that I want to test.
 
 Since I have background operations that sometimes need to be waited for to be finished before the test can start, I have applied the concept of an IdlingResource object which is used by the Compose testing framework to pause the test while the background operation is still being executed.
 
@@ -72,3 +72,33 @@ Loading state:
 
 Failure state:
 1. Ensure the error message is displayed by asserting that the Composable with the test tag for the error message Composable is displayed after invoking the Composable with the error state object.
+
+---
+
+Kriteria Submission 3
+Berikut kriteria submission yang harus Anda penuhi:
+
+Mempertahankan fitur sebelumnya.
+
+Favorite Film
+Syarat:
+Dapat menyimpan film ke database favorite.
+Dapat menghapus film dari database favorite.
+Terdapat halaman untuk menampilkan daftar Favorite Movies.
+Terdapat halaman untuk menampilkan daftar Favorite TV Show.
+Menerapkan Room menyimpan data Favorite Movie dan Favorite TVShow.
+Menerapkan Pagination untuk mengatur data pada RecyclerView.
+
+Unit Test
+Syarat:
+Menerapkan unit test pada fungsi yang ada pada kelas Repository dan ViewModel.
+
+Instrumentation Tests
+Syarat:
+
+Menerapkan instrumentation test untuk memastikan fitur-fitur yang ada berjalan dengan semestinya.
+Jika pada aplikasi terdapat proses asynchronous, maka Anda wajib menerapkan Idle Resources.
+Tuliskan skenario instrumentation test pada kolom Catatan atau berkas tersendiri (jangan lupa sampaikan juga di kolom Catatan agar reviewer dapat mengetahuinya) ketika Anda ingin mengumpulkan tugas ini. Untuk format penulisan sekenario pengujian, Anda bisa melihat contoh di modul Proyek Academy : Pengujian ViewModel.
+
+Catatan:
+Jika Anda menggunakan local properties untuk menyimpan beberapa konfigurasi, maka Anda wajib menambahkan konfigurasinya pada kolom catatan pada saat mengirimkan submission.
