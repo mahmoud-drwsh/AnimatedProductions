@@ -32,12 +32,14 @@ class OrderRepoTest {
     }
 
     // these objects will be used to test that the dataStore is working correctly
-    private val orderObjects = listOf(
-        Order(Order.Property.RELEASE_DATE, Order.Type.DESCENDING),
-        Order(Order.Property.RELEASE_DATE, Order.Type.ASCENDING),
-        Order(Order.Property.Name, Order.Type.ASCENDING),
-        Order(Order.Property.Name, Order.Type.DESCENDING),
-    )
+    private val orderObjects = mutableListOf<Order>().apply {
+        // add every possible combination of property and type
+        Order.Type.values().forEach { type ->
+            Order.Property.values().forEach { property ->
+                Order(property, type)
+            }
+        }
+    }
 
 
     @Test

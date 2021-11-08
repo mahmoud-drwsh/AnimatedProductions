@@ -9,9 +9,10 @@ import com.mahmoudmohamaddarwish.animatedproductions.data.model.remote.DiscoverT
 fun Resource.Success<List<Production>>.sortProductions(order: Order): List<Production> {
     val selector = { it: Production ->
         when (order.property) {
-            Order.Property.Name -> it.name
+            Order.Property.VOTE_AVERAGE -> it.name
             Order.Property.RELEASE_DATE -> it.firstAirDate
-        }
+            Order.Property.POPULARITY -> it.popularity
+        }.toString()
     }
 
     return when (order.type) {

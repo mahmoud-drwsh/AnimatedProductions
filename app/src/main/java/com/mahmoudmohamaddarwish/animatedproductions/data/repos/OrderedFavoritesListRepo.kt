@@ -1,17 +1,16 @@
 package com.mahmoudmohamaddarwish.animatedproductions.data.repos
 
 import android.content.res.Resources
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
-import com.mahmoudmohamaddarwish.animatedproductions.data.room.FavoritesDao
 import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Order
 import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
+import com.mahmoudmohamaddarwish.animatedproductions.data.room.FavoritesDao
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.FavoritesListUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -49,6 +48,10 @@ class OrderedFavoritesListRepo @Inject constructor(
             }
         }.sorted()
 
+    override val favoriteShowsPagingSource = dao.getPagedFavoriteShows()
+
+    override val favoriteMoviesPagingSource = dao.getPagedFavoriteMovies()
+
     override fun deleteAll() {
         dao.deleteAll()
     }
@@ -58,4 +61,6 @@ class OrderedFavoritesListRepo @Inject constructor(
     override suspend fun removeFavorite(production: Production) = dao.deleteFavorite(production)
 
     override fun isProductionAFavorite(id: Int): Flow<Boolean> = dao.isProductionAFavorite(id)
+
 }
+

@@ -153,7 +153,7 @@ class MainActivitySuccessStatesTest {
             sortingIconButton.performClick()
 
 
-            onNodeWithText(Order.Property.Name.label).assertIsDisplayed()
+            onNodeWithText(Order.Property.VOTE_AVERAGE.label).assertIsDisplayed()
             onNodeWithText(Order.Property.RELEASE_DATE.label).assertIsDisplayed()
             onNodeWithText(Order.Type.ASCENDING.label).assertIsDisplayed()
             onNodeWithText(Order.Type.DESCENDING.label).assertIsDisplayed()

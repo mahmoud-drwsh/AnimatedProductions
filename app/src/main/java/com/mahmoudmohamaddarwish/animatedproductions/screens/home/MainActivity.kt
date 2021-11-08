@@ -3,10 +3,15 @@ package com.mahmoudmohamaddarwish.animatedproductions.screens.home
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
@@ -18,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -29,22 +35,24 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.mahmoudmohamaddarwish.animatedproductions.R
-import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Order
 import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
-import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredLoadingMessageWithIndicator
-import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredText
-import com.mahmoudmohamaddarwish.animatedproductions.screens.components.ProductionsGridList
-import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.FavoritesViewModel
+import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredContent
+import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CoilImage
+import com.mahmoudmohamaddarwish.animatedproductions.screens.details.ProductionDetailsActivity.Companion.navigateToDetails
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.BottomNavigationDestinationModel.Companion.DESTINATION_MODELS
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.viewmodels.ProductionsOrderViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.viewmodels.ProductionsViewModel
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.SORT_MENU_OPTION_HEIGHT
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.SORT_MENU_OPTION_HORIZONTAL_PADDING
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.SORT_MENU_OPTION_TEXT_START_PADDING
+import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.FavoritesViewModel
+import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.*
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme3.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 
 
@@ -92,6 +100,7 @@ private fun MainNavHost(
     }
 }
 
+@FlowPreview
 @Composable
 private fun MainNavigationBottomBar(
     currentBackStackEntry: NavBackStackEntry?,
@@ -111,27 +120,66 @@ private fun MainNavigationBottomBar(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ProductionsResourceFlowGrid(productionsFlow: Flow<Resource<List<Production>>>) {
-    val resource by productionsFlow.collectAsState(initial = Resource.Loading)
+fun ProductionsPagedGrid(productionsFlow: Flow<PagingData<Production>>) {
+    val context = LocalContext.current
+    val lazyPagingItems = productionsFlow.collectAsLazyPagingItems()
 
-    when (resource) {
-        is Resource.Error -> {
-            val error = resource as Resource.Error
-            CenteredText(text = error.message)
+    Column {
+        if (lazyPagingItems.loadState.append == LoadState.Loading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally)
+            )
         }
 
-        is Resource.Loading -> CenteredLoadingMessageWithIndicator(
-            modifier = Modifier.testTag(MAIN_ACTIVITY_MOVIES_LOADING_INDICATOR_TEST_TAG)
-        )
+        if (lazyPagingItems.itemCount == 0) {
+            CenteredContent {
+                Text(text = "Empty list")
+                Button(onClick = { lazyPagingItems.retry() }) {
+                    Text(text = "Retry")
+                }
 
-        is Resource.Success -> {
-            ProductionsGridList(
-                list = (resource as Resource.Success<List<Production>>).data,
-                testTag = MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG
+            }
+        } else {
+            LazyVerticalGrid(
+                cells = GridCells.Fixed(PRODUCTIONS_GRID_CELLS_NUMBER),
+                contentPadding = PaddingValues(top = 0.dp, start = 4.dp, end = 4.dp, bottom = 4.dp),
+            ) {
+
+                items(lazyPagingItems.itemCount) { index ->
+                    val item = lazyPagingItems[index]
+                    item?.let { production ->
+                        Box(
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CoilImage(
+                                url = production.posterPath,
+                                imageDescription = stringResource(R.string.poster_image_description),
+                                modifier = Modifier
+                                    .padding(PRODUCTION_POSTER_IMAGE_PADDING)
+                                    .height(POSTER_IMAGE_HEIGHT)
+                                    .fillMaxWidth()
+                                    .clickable { context.navigateToDetails(production) }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
+            Text(
+                text = "Waiting for items to load from the backend",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally)
             )
         }
     }
+
 }
 
 @Composable
@@ -155,11 +203,9 @@ fun SortDialog(viewModel: ProductionsOrderViewModel = hiltViewModel()) {
             Surface(
                 shape = RoundedCornerShape(8.dp)
             ) {
-                val propertyRadioOptions: List<Order.Property> = listOf(Order.Property.Name,
-                    Order.Property.RELEASE_DATE)
+                val propertyRadioOptions: Array<Order.Property> = Order.Property.values()
 
-                val typeRadioOptions: List<Order.Type> = listOf(Order.Type.ASCENDING,
-                    Order.Type.DESCENDING)
+                val typeRadioOptions: Array<Order.Type> = Order.Type.values()
 
                 Column(Modifier.selectableGroup()) {
                     propertyRadioOptions.forEach { orderProperty ->
@@ -190,8 +236,9 @@ fun SortDialog(viewModel: ProductionsOrderViewModel = hiltViewModel()) {
                             Spacer(modifier = Modifier.weight(1f))
                             Icon(
                                 imageVector = when (orderProperty) {
-                                    Order.Property.Name -> Icons.Default.SortByAlpha
+                                    Order.Property.VOTE_AVERAGE -> Icons.Default.SortByAlpha
                                     Order.Property.RELEASE_DATE -> Icons.Default.Schedule
+                                    Order.Property.POPULARITY -> Icons.Default.Favorite
                                 },
                                 contentDescription = null,
                             )
@@ -238,7 +285,6 @@ fun SortDialog(viewModel: ProductionsOrderViewModel = hiltViewModel()) {
                 }
             }
         }
-
 }
 
 @Composable
@@ -263,6 +309,8 @@ fun MainAppBar(title: @Composable () -> Unit) {
  *      3. Favorite Movies
  *      4. Favorite Shows
  * */
+@OptIn(ExperimentalCoroutinesApi::class)
+@FlowPreview
 sealed class BottomNavigationDestinationModel(
     val route: String,
     val icon: ImageVector,
@@ -275,7 +323,7 @@ sealed class BottomNavigationDestinationModel(
         labelComposableLambda = { Text(stringResource(id = R.string.movies_tab_label)) },
         content = @Composable {
             val productionsViewModel: ProductionsViewModel = hiltViewModel()
-            ProductionsResourceFlowGrid(productionsViewModel.orderedMoviesFlow)
+            ProductionsPagedGrid(productionsViewModel.moviesDataSourceFlow)
         }
     )
 
@@ -285,7 +333,7 @@ sealed class BottomNavigationDestinationModel(
         labelComposableLambda = { Text(stringResource(id = R.string.shows_tab_label)) },
         content = @Composable {
             val productionsViewModel: ProductionsViewModel = hiltViewModel()
-            ProductionsResourceFlowGrid(productionsViewModel.orderedShowsFlow)
+            ProductionsPagedGrid(productionsViewModel.showsDataSourceFlow)
         }
     )
 
@@ -295,7 +343,7 @@ sealed class BottomNavigationDestinationModel(
         labelComposableLambda = { Text(stringResource(R.string.favorite_movies)) },
         content = @Composable {
             val favoritesViewModel: FavoritesViewModel = hiltViewModel()
-            ProductionsResourceFlowGrid(favoritesViewModel.movies)
+            ProductionsPagedGrid(favoritesViewModel.moviesPaged)
         }
     )
 
@@ -305,8 +353,7 @@ sealed class BottomNavigationDestinationModel(
         labelComposableLambda = { Text(stringResource(R.string.favorite_shows)) },
         content = @Composable {
             val favoritesViewModel: FavoritesViewModel = hiltViewModel()
-            ProductionsResourceFlowGrid(favoritesViewModel.shows)
-
+            ProductionsPagedGrid(favoritesViewModel.showsPaged)
         }
     )
 

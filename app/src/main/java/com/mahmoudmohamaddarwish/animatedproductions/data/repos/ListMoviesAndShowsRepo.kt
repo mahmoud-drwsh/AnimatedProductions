@@ -5,10 +5,13 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.mahmoudmohamaddarwish.animatedproductions.R
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
+import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Order
 import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
 import com.mahmoudmohamaddarwish.animatedproductions.data.model.remote.DiscoverMovieItemDto.Companion.toProduction
 import com.mahmoudmohamaddarwish.animatedproductions.data.model.remote.DiscoverTVItemDto.Companion.toProduction
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Service
+import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getMoviesSortingQueryArgument
+import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getShowsSortingQueryArgument
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.ListMoviesAndShowsUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -57,6 +60,7 @@ class ListMoviesAndShowsRepo @Inject constructor(
 
 class ShowsDataSource(
     private val service: Service,
+    private val order: Order,
 ) : PagingSource<Int, Production>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Production> {
@@ -64,7 +68,7 @@ class ShowsDataSource(
 
         return try {
 
-            val data = service.getShows(page)
+            val data = service.getShows(page, getShowsSortingQueryArgument(order))
 
             val productions: List<Production> = data.discoverTVItemDtos
                 .filterNot(::profaneShowsSelector)
@@ -96,6 +100,7 @@ class ShowsDataSource(
 
 class MoviesDataSource(
     private val service: Service,
+    private val order: Order,
 ) : PagingSource<Int, Production>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Production> {
@@ -103,10 +108,9 @@ class MoviesDataSource(
 
         return try {
 
-            val data = service.getShows(page)
+            val data = service.getMovies(page, getMoviesSortingQueryArgument(order))
 
-            val productions: List<Production> = data.discoverTVItemDtos
-                .filterNot(::profaneShowsSelector)
+            val productions: List<Production> = data.discoverMovieItemDtos
                 .map { it.toProduction() }
                 .removeProductionsWithoutImages()
 

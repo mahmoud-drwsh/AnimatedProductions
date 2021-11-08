@@ -1,5 +1,6 @@
 package com.mahmoudmohamaddarwish.animatedproductions.data.room
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
 import kotlinx.coroutines.flow.Flow
@@ -18,6 +19,12 @@ interface FavoritesDao {
 
     @Query("SELECT * FROM favoriteProductions WHERE type = :type")
     fun getFavoriteShows(type: Production.ProductionType = Production.ProductionType.SHOW): Flow<List<Production>>
+
+    @Query("SELECT * FROM favoriteProductions WHERE type = :type")
+    fun getPagedFavoriteMovies(type: Production.ProductionType = Production.ProductionType.MOVIE): PagingSource<Int, Production>
+
+    @Query("SELECT * FROM favoriteProductions WHERE type = :type")
+    fun getPagedFavoriteShows(type: Production.ProductionType = Production.ProductionType.SHOW): PagingSource<Int, Production>
 
     @Query("DELETE FROM favoriteProductions")
     fun deleteAll()
