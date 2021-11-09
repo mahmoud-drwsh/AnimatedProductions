@@ -6,6 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface FavoritesListUseCase {
 
+    val moviesFlow: Flow<List<Production>>
+    val showsFlow: Flow<List<Production>>
+
     fun favoriteMoviesPagingSource(): PagingSource<Int, Production>
 
     fun favoriteShowsPagingSource(): PagingSource<Int, Production>

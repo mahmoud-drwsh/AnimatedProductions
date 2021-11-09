@@ -18,6 +18,10 @@ class FavoritesListRepo @Inject constructor(
     override fun favoriteShowsPagingSource(): PagingSource<Int, Production> =
         dao.getPagedFavoriteShows()
 
+    override val moviesFlow: Flow<List<Production>> = dao.getFavoriteMovies()
+
+    override val showsFlow: Flow<List<Production>> = dao.getFavoriteShows()
+
     override fun favoriteMoviesPagingSource(): PagingSource<Int, Production> =
         dao.getPagedFavoriteMovies()
 

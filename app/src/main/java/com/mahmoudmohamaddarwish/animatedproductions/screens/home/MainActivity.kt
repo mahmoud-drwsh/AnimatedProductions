@@ -149,8 +149,12 @@ fun ProductionsPagedGrid(
             && lazyPagingItems.itemCount == 0
         ) {
             CenteredText(text = stringResource(R.string.paging_empty_list_message))
-        } else
+        } else if (
+            lazyPagingItems.loadState.refresh is LoadState.NotLoading
+            && lazyPagingItems.itemCount > 0
+        ) {
             onLoaded()
+        }
 
         LoadedProductionsGird(
             lazyPagingItems = lazyPagingItems,

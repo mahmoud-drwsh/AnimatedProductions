@@ -6,8 +6,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
-import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.FavoritesListUseCase
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.NightModeUseCase
 import com.mahmoudmohamaddarwish.animatedproductions.screens.home.BottomNavigationDestinationModel.Companion.DESTINATION_MODELS
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -36,10 +34,6 @@ class MainActivitySuccessStatesTest {
 
     @get:Rule(order = 2)
     var composeTestRule = createAndroidComposeRule<MainActivity>()
-
-
-    @Inject
-    lateinit var favoritesListUseCase: FavoritesListUseCase
 
     @Inject
     lateinit var nightModeUseCase: NightModeUseCase
@@ -80,68 +74,6 @@ class MainActivitySuccessStatesTest {
     }
 
     @Test
-    fun appSuccessfullyLoadsMovies() {
-        composeTestRule.run {
-            onNodeWithTag(MainActivityTestTags.MOVIES_NAV_ITEM.name)
-                .assertHasClickAction()
-                .assertIsDisplayed()
-                .performClick()
-
-            registerIdlingResource(MoviesIdlingResource)
-
-            onNodeWithTag(MainActivityTestTags.MOVIES_LIST.name).assertIsDisplayed()
-        }
-    }
-
-    @Test
-    fun appSuccessfullyLoadsShows() {
-        composeTestRule.run {
-            onNodeWithTag(MainActivityTestTags.SHOWS_NAV_ITEM.name)
-                .assertHasClickAction()
-                .assertIsDisplayed()
-                .performClick()
-
-            registerIdlingResource(ShowsIdlingResource)
-
-            onNodeWithTag(MainActivityTestTags.SHOWS_LIST.name).assertIsDisplayed()
-        }
-    }
-
-    @Test
-    fun appSuccessfullyLoadsFavoriteMovies() {
-
-        addDummyFavorites()
-
-        composeTestRule.run {
-            onNodeWithTag(MainActivityTestTags.FAVORITE_MOVIES_NAV_ITEM.name)
-                .assertHasClickAction()
-                .assertIsDisplayed()
-                .performClick()
-
-            registerIdlingResource(FavoriteMoviesIdlingResource)
-
-            onNodeWithTag(MainActivityTestTags.FAVORITE_MOVIES_LIST.name).assertIsDisplayed()
-        }
-    }
-
-    @Test
-    fun appSuccessfullyLoadsFavoriteShows() {
-
-        addDummyFavorites()
-
-        composeTestRule.run {
-            onNodeWithTag(MainActivityTestTags.FAVORITE_SHOWS_NAV_ITEM.name)
-                .assertHasClickAction()
-                .assertIsDisplayed()
-                .performClick()
-
-            registerIdlingResource(FavoriteShowsIdlingResource)
-
-            onNodeWithTag(MainActivityTestTags.FAVORITE_SHOWS_LIST.name).assertIsDisplayed()
-        }
-    }
-
-    @Test
     fun clickingUIModeTogglingIconChangesMode(): Unit = runBlocking {
         val millisToWaitForDataToBeSaved = 512L
 
@@ -159,13 +91,6 @@ class MainActivitySuccessStatesTest {
         val afterToggling = nightModeUseCase.isNightModeEnabled.first()
 
         assert(beforeToggling != afterToggling)
-    }
-
-    private fun addDummyFavorites() {
-        runBlocking {
-            favoritesListUseCase.addFavorite(Production.movieDummy)
-            favoritesListUseCase.addFavorite(Production.showDummy)
-        }
     }
 }
 
