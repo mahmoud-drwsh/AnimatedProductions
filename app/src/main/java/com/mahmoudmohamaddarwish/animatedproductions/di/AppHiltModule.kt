@@ -6,9 +6,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.room.Room
 import com.mahmoudmohamaddarwish.animatedproductions.data.datastore.dataStore
-import com.mahmoudmohamaddarwish.animatedproductions.data.repos.OrderedFavoritesListRepo
+import com.mahmoudmohamaddarwish.animatedproductions.data.repos.FavoritesListRepo
 import com.mahmoudmohamaddarwish.animatedproductions.data.repos.ListMoviesAndShowsRepo
-import com.mahmoudmohamaddarwish.animatedproductions.data.repos.OrderedMoviesAndShowsRepo
+import com.mahmoudmohamaddarwish.animatedproductions.data.repos.NightModeRepo
 import com.mahmoudmohamaddarwish.animatedproductions.data.room.FavoritesDao
 import com.mahmoudmohamaddarwish.animatedproductions.data.room.FavoritesDb
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Constants
@@ -16,7 +16,7 @@ import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Service
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.okHttpClient
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.FavoritesListUseCase
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.ListMoviesAndShowsUseCase
-import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderedMoviesAndShowsListsUseCase
+import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.NightModeUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -68,24 +68,17 @@ object AppHiltModule {
 
     @Singleton
     @Provides
-    fun provideOrderingUseCase(repo: com.mahmoudmohamaddarwish.animatedproductions.data.repos.OrderRepo): com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.OrderUseCase =
-        repo
-
-    @Singleton
-    @Provides
-    fun provideOrderedMoviesAndShowsUseCase(orderedMoviesAndShowsRepo: OrderedMoviesAndShowsRepo): OrderedMoviesAndShowsListsUseCase =
-        orderedMoviesAndShowsRepo
-
-    @Singleton
-    @Provides
     fun provideListMoviesAndShowsUseCase(listMoviesAndShowsRepo: ListMoviesAndShowsRepo): ListMoviesAndShowsUseCase =
         listMoviesAndShowsRepo
 
     @Singleton
     @Provides
-    fun provideFavoritesListUseCaseUseCase(orderedFavoritesListRepo: OrderedFavoritesListRepo): FavoritesListUseCase =
-        orderedFavoritesListRepo
+    fun provideFavoritesListUseCase(favoritesListRepo: FavoritesListRepo): FavoritesListUseCase =
+        favoritesListRepo
 
+    @Singleton
+    @Provides
+    fun provideNightModeUseCase(nightModeRepo: NightModeRepo): NightModeUseCase = nightModeRepo
 
     @Singleton
     @Provides

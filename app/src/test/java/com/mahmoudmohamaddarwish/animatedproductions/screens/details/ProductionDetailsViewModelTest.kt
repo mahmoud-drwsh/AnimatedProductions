@@ -2,6 +2,7 @@ package com.mahmoudmohamaddarwish.animatedproductions.screens.details
 
 import com.mahmoudmohamaddarwish.animatedproductions.Resource
 import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
+import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.ProductionDetailsViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 

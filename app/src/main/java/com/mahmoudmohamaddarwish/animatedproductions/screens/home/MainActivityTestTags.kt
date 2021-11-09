@@ -1,19 +1,22 @@
 package com.mahmoudmohamaddarwish.animatedproductions.screens.home
 
-const val MAIN_ACTIVITY_MOVIES_AND_SHOWS_TAB_LAYOUT_TEST_TAG = "movies_and_shows_tag"
-
-const val MAIN_ACTIVITY_MOVIES_TAB_TEST_TAG = "movies tab test tag"
-
-const val MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG = "shows_tab_test_tag"
-
-const val MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG = "movies list test tag"
-
-const val MAIN_ACTIVITY_SHOWS_LIST_TEST_TAG = "shows_list_test_tag"
-
-const val MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG = "main activity poster image test tag"
-
-const val MAIN_ACTIVITY_SHOWS_LOADING_INDICATOR_TEST_TAG = "shows loading indicator test tag"
-
-const val MAIN_ACTIVITY_MOVIES_LOADING_INDICATOR_TEST_TAG = "movies loading indicator test tag"
-
-const val MAIN_ACTIVITY_SORTING_ICON_BUTTON_TEST_TAG = "sorting icon test tag"
+/**
+ * To save myself the trouble of having to create a unique tag for each composable, I created
+ * an enum value for each of the composables that I want to use in the test, so that duplications
+ * would be detected at runtime.
+ * */
+enum class MainActivityTestTags {
+    ROOT_COMPOSABLE,
+    NAV_BAR,
+    MOVIES_NAV_ITEM,
+    SHOWS_NAV_ITEM,
+    FAVORITE_MOVIES_NAV_ITEM,
+    FAVORITE_SHOWS_NAV_ITEM,
+    MOVIES_LIST,
+    SHOWS_LIST,
+    FAVORITE_MOVIES_LIST,
+    FAVORITE_SHOWS_LIST,
+    POSTER_IMAGE,
+    UI_MODE_ICON_BUTTON,
+    MAIN_TOP_APP_BAR,
+}

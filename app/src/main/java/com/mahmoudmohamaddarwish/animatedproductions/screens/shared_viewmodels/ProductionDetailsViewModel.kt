@@ -1,4 +1,4 @@
-package com.mahmoudmohamaddarwish.animatedproductions.screens.details
+package com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.Resource

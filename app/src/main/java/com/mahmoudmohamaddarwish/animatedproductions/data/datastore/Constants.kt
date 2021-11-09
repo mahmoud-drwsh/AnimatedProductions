@@ -1,11 +1,9 @@
 package com.mahmoudmohamaddarwish.animatedproductions.data.datastore
 
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.booleanPreferencesKey
 
 object Constants {
-    internal val orderPropertyNameKey: Preferences.Key<String> =
-        stringPreferencesKey("orderPropertyNameKey")
-
-    internal val orderTypeKey: Preferences.Key<String> = stringPreferencesKey("orderTypeKey")
+    val nightModeKey: Preferences.Key<Boolean> =
+        booleanPreferencesKey("orderPropertyNameKey")
 }

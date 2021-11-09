@@ -19,4 +19,6 @@
     <string name="favorite_movies">Favorite Movies</string>
     <string name="favorite_shows">Favorite Shows</string>
     <string name="toggle_favorite_state_desc">toggle favorite state icon</string>
+    <string name="paging_loading_message">Waiting for items to load from the backend</string>
+    <string name="paging_empty_list_message">This list is empty</string>
 </resources>

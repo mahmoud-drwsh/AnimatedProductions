@@ -1,10 +1,13 @@
 package com.mahmoudmohamaddarwish.animatedproductions.ui.theme3
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.NightModeViewModel
 
 private val LightThemeColors = lightColorScheme(
 
@@ -65,9 +68,12 @@ private val DarkThemeColors = darkColorScheme(
 
 @Composable
 fun AppTheme(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    nightModeViewModel: NightModeViewModel = hiltViewModel(),
     content: @Composable() () -> Unit,
 ) {
+    val useDarkTheme: Boolean by nightModeViewModel
+        .isNightModeEnabled.collectAsState(initial = false)
+
     val colors = if (!useDarkTheme) {
         LightThemeColors
     } else {
@@ -80,3 +86,4 @@ fun AppTheme(
         content = content
     )
 }
+

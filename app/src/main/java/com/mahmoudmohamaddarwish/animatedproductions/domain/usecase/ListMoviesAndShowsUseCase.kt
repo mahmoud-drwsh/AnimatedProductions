@@ -1,11 +1,12 @@
 package com.mahmoudmohamaddarwish.animatedproductions.domain.usecase
 
-import com.mahmoudmohamaddarwish.animatedproductions.Resource
+import androidx.paging.PagingSource
 import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
-import kotlinx.coroutines.flow.Flow
 
 interface ListMoviesAndShowsUseCase {
-    val moviesFlow: Flow<Resource<List<Production>>>
-    val showsFlow: Flow<Resource<List<Production>>>
+
+    fun moviesPagingSource(): PagingSource<Int, Production>
+
+    fun showsPagingSource(): PagingSource<Int, Production>
 }
 

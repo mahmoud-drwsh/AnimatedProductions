@@ -35,6 +35,7 @@ import com.mahmoudmohamaddarwish.animatedproductions.screens.components.Centered
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CenteredText
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CoilImage
 import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.FavoritesViewModel
+import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.ProductionDetailsViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.*
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme3.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,24 +56,24 @@ class ProductionDetailsActivity : ComponentActivity() {
             val detailsUIState by productionDetailsViewModel.productionObjectFlow
                 .collectAsState(initial = Resource.Loading)
 
-            AppTheme {
+            AppTheme() {
                 DetailsScreen(detailsUIState = detailsUIState, navigateBack = { navigateUp() })
             }
         }
     }
 
     companion object {
-        private const val PRODUCTION_INTENT_KEY = "production_key"
+        private const val PRODUCTION_OBJECT_INTENT_KEY = "production_key"
 
         private fun Context.newIntentWithExtra(production: Production): Intent =
             Intent(this, ProductionDetailsActivity::class.java)
-                .apply { putExtra(PRODUCTION_INTENT_KEY, production) }
+                .apply { putExtra(PRODUCTION_OBJECT_INTENT_KEY, production) }
 
         fun Context.navigateToDetails(production: Production) =
             startActivity(newIntentWithExtra(production))
 
         internal fun ProductionDetailsActivity.getProductionObject(): Production? =
-            intent.getParcelableExtra(PRODUCTION_INTENT_KEY)
+            intent.getParcelableExtra(PRODUCTION_OBJECT_INTENT_KEY)
     }
 }
 
@@ -135,7 +136,9 @@ private fun ProductionDetailsAppBar(
     CenterAlignedTopAppBar(
         title = { Text(text = stringResource(R.string.production_details)) },
         navigationIcon = {
-            IconButton(onClick = { navigateBack() }) {
+            IconButton(
+                onClick = { navigateBack() },
+            ) {
                 Icon(
                     Icons.Default.ArrowBack,
                     contentDescription = stringResource(R.string.navigate_back_button_desc)
@@ -147,7 +150,8 @@ private fun ProductionDetailsAppBar(
                 onClick = {
                     favoritesViewModel.toggleFavoriteStatus(detailsUIState.data,
                         isProductionAFavorite)
-                }
+                },
+                modifier = Modifier.testTag(DETAILS_ROOT_FAVORITE_ICON_TEST_TAG)
             ) {
                 val icon =
                     if (isProductionAFavorite) Icons.Default.Favorite
@@ -247,7 +251,9 @@ private fun ProductionDetailsSuccessScaffoldContent(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(DETAILS_RATING_AND_LANGUAGE_ROW_TEST_TAG)
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Row(

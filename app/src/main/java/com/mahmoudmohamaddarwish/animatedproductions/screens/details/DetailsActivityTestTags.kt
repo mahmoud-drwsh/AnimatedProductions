@@ -2,6 +2,10 @@ package com.mahmoudmohamaddarwish.animatedproductions.screens.details
 
 const val DETAILS_ROOT_COMPOSABLE_TEST_TAG = "details root composable test tag"
 
+const val DETAILS_ROOT_FAVORITE_ICON_TEST_TAG = "favorite icon composable test tag"
+
+const val DETAILS_RATING_AND_LANGUAGE_ROW_TEST_TAG = "favorite icon composable test tag"
+
 const val DETAILS_BACKDROP_IMAGE_TEST_TAG = "details_backdrop_image_test_tag"
 
 const val DETAILS_POSTER_IMAGE_TEST_TAG = "details_poster_image_test_tag"

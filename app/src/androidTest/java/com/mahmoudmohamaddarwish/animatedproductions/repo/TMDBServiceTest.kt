@@ -38,11 +38,24 @@ class TMDBServiceTest {
 
 
     @Test
+    fun ensureValidMoviesListIsReturnedByTheService() = runBlocking {
+        val movies = service.getMovies()
+
+        assert(movies.discoverMovieItemDtos.all { it.title.isNotBlank() })
+    }
+
+
+    @Test
     fun ensureNonEmptyShowsListIsReturnedByTheService() = runBlocking {
         val movies = service.getShows()
 
         assert(movies.discoverTVItemDtos.isNotEmpty())
     }
-}
 
-private const val TAG = "TMDBServiceTest"
+    @Test
+    fun ensureValidShowsListIsReturnedByTheService() = runBlocking {
+        val movies = service.getShows()
+
+        assert(movies.discoverTVItemDtos.all { it.name.isNotBlank() })
+    }
+}
