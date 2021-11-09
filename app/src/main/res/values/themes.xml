@@ -1,4 +1,10 @@
 <resources>
+
+    <style name="Theme.MySplash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.AnimatedProductions.NoActionBar</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="Theme.AnimatedProductions" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->

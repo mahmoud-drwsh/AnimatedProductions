@@ -18,7 +18,8 @@ The following libraries were used in the writing of the animatedProductionsApp:
 7. Google's Gson (for JSON parsing).
 8. Jetpack DataStore.
 9. Jetpack Room.
-10. And more.
+10. Jetpack SplashScreen.
+11. And more.
 
 --------------------------------------------------
 
