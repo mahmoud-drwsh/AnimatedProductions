@@ -43,8 +43,8 @@ import com.mahmoudmohamaddarwish.animatedproductions.screens.home.BottomNavigati
 import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.FavoritesViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.NightModeViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.ProductionsViewModel
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.POSTER_IMAGE_HEIGHT
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.PRODUCTION_POSTER_IMAGE_PADDING
+import com.mahmoudmohamaddarwish.animatedproductions.ui.theme3.POSTER_IMAGE_HEIGHT
+import com.mahmoudmohamaddarwish.animatedproductions.ui.theme3.PRODUCTION_POSTER_IMAGE_PADDING
 import com.mahmoudmohamaddarwish.animatedproductions.ui.theme3.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi

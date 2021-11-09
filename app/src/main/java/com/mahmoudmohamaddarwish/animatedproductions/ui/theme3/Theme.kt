@@ -69,7 +69,7 @@ private val DarkThemeColors = darkColorScheme(
 @Composable
 fun AppTheme(
     nightModeViewModel: NightModeViewModel = hiltViewModel(),
-    content: @Composable() () -> Unit,
+    content: @Composable () -> Unit,
 ) {
     val useDarkTheme: Boolean by nightModeViewModel
         .isNightModeEnabled.collectAsState(initial = false)

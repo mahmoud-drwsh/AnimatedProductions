@@ -1,6 +1,5 @@
 package com.mahmoudmohamaddarwish.animatedproductions.data.repos
 
-import android.content.res.Resources
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
@@ -14,7 +13,6 @@ import javax.inject.Singleton
 @Singleton
 class ListMoviesAndShowsRepo @Inject constructor(
     private val service: Service,
-    private val resources: Resources,
 ) : ListMoviesAndShowsUseCase {
 
     override fun moviesPagingSource(): PagingSource<Int, Production> = MoviesDataSource(service)

@@ -36,8 +36,7 @@ import com.mahmoudmohamaddarwish.animatedproductions.screens.components.Centered
 import com.mahmoudmohamaddarwish.animatedproductions.screens.components.CoilImage
 import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.FavoritesViewModel
 import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.ProductionDetailsViewModel
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme.*
-import com.mahmoudmohamaddarwish.animatedproductions.ui.theme3.AppTheme
+import com.mahmoudmohamaddarwish.animatedproductions.ui.theme3.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 

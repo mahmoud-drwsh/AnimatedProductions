@@ -4,7 +4,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.mahmoudmohamaddarwish.animatedproductions.data.datastore.Constants
-import com.mahmoudmohamaddarwish.animatedproductions.di.CoroutinesScopesModule
 import com.mahmoudmohamaddarwish.animatedproductions.di.CoroutinesScopesModule.ApplicationScope
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.NightModeUseCase
 import kotlinx.coroutines.CoroutineScope

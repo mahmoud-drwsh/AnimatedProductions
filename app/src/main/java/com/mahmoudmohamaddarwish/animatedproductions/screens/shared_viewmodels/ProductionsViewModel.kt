@@ -5,7 +5,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.mahmoudmohamaddarwish.animatedproductions.data.model.domain.Production
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Service
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.ListMoviesAndShowsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,7 +16,6 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @HiltViewModel
 class ProductionsViewModel @Inject constructor(
-    private val service: Service,
     listMoviesAndShowsUseCase: ListMoviesAndShowsUseCase,
 ) : ViewModel() {
 
