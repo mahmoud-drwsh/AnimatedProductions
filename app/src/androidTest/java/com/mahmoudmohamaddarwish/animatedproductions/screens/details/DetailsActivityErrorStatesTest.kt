@@ -32,7 +32,7 @@ class DetailsActivityErrorStatesTest {
     @Test
     fun app_displays_error_message() {
         composeTestRule.run {
-            val errorMessageComposable = onNodeWithTag(DETAILS_ERROR_MESSAGE_TEST_TAG)
+            val errorMessageComposable = onNodeWithTag(DetailsActivityTestTags.ERROR_MESSAGE.name)
 
             errorMessageComposable.assertIsDisplayed()
 

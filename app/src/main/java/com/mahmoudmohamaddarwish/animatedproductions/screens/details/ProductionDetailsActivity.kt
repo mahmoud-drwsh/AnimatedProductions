@@ -56,7 +56,7 @@ class ProductionDetailsActivity : ComponentActivity() {
             val detailsUIState by productionDetailsViewModel.productionObjectFlow
                 .collectAsState(initial = Resource.Loading)
 
-            AppTheme() {
+            AppTheme {
                 DetailsScreen(detailsUIState = detailsUIState, navigateBack = { navigateUp() })
             }
         }
@@ -84,10 +84,10 @@ fun DetailsScreen(
 ) = when (detailsUIState) {
     is Resource.Error -> CenteredText(
         text = detailsUIState.message,
-        Modifier.testTag(DETAILS_ERROR_MESSAGE_TEST_TAG)
+        Modifier.testTag(DetailsActivityTestTags.ERROR_MESSAGE.name)
     )
     is Resource.Loading -> CenteredLoadingMessageWithIndicator(
-        Modifier.testTag(DETAILS_LOADING_INDICATOR_TEST_TAG)
+        Modifier.testTag(DetailsActivityTestTags.LOADING_INDICATOR.name)
     )
     is Resource.Success -> DetailsScreenSuccessContent(
         detailsUIState = detailsUIState,
@@ -117,7 +117,7 @@ private fun DetailsScreenSuccessContent(
                 isProductionAFavorite = isProductionAFavorite
             )
         },
-        modifier = Modifier.testTag(DETAILS_ROOT_COMPOSABLE_TEST_TAG)
+        modifier = Modifier.testTag(DetailsActivityTestTags.ROOT_COMPOSABLE.name)
     ) { paddingValues ->
         ProductionDetailsSuccessScaffoldContent(
             Modifier.padding(paddingValues),
@@ -151,7 +151,7 @@ private fun ProductionDetailsAppBar(
                     favoritesViewModel.toggleFavoriteStatus(detailsUIState.data,
                         isProductionAFavorite)
                 },
-                modifier = Modifier.testTag(DETAILS_ROOT_FAVORITE_ICON_TEST_TAG)
+                modifier = Modifier.testTag(DetailsActivityTestTags.ROOT_FAVORITE_ICON.name)
             ) {
                 val icon =
                     if (isProductionAFavorite) Icons.Default.Favorite
@@ -187,7 +187,7 @@ private fun ProductionDetailsSuccessScaffoldContent(
                 .height(BACKDROP_HEIGHT)
                 .padding(horizontal = 8.dp)
                 .padding(top = 4.dp)
-                .testTag(DETAILS_BACKDROP_IMAGE_TEST_TAG))
+                .testTag(DetailsActivityTestTags.BACKDROP_IMAGE.name))
 
         Column(
             Modifier
@@ -203,7 +203,7 @@ private fun ProductionDetailsSuccessScaffoldContent(
                     imageDescription = stringResource(R.string.poster_image_description),
                     Modifier
                         .width(DETAILS_POSTER_IMAGE_WIDTH)
-                        .testTag(DETAILS_POSTER_IMAGE_TEST_TAG)
+                        .testTag(DetailsActivityTestTags.POSTER_IMAGE.name)
                 )
 
                 Column(
@@ -212,7 +212,7 @@ private fun ProductionDetailsSuccessScaffoldContent(
                     Text(
                         text = detailsUIState.data.name,
                         style = MaterialTheme.typography.h5,
-                        modifier = Modifier.testTag(DETAILS_TITLE_TEXT_TEST_TAG),
+                        modifier = Modifier.testTag(DetailsActivityTestTags.TITLE_TEXT.name),
                     )
 
                     Text(
@@ -225,7 +225,7 @@ private fun ProductionDetailsSuccessScaffoldContent(
             Surface(
                 modifier = Modifier
                     .shadow(8.dp, RoundedCornerShape(8.dp))
-                    .testTag(DETAILS_OVERVIEW_TEXT_TEST_TAG)
+                    .testTag(DetailsActivityTestTags.OVERVIEW_TEXT.name)
             ) {
                 Column(
                     verticalArrangement = spacedBy(8.dp),
@@ -253,7 +253,7 @@ private fun ProductionDetailsSuccessScaffoldContent(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .testTag(DETAILS_RATING_AND_LANGUAGE_ROW_TEST_TAG)
+                    .testTag(DetailsActivityTestTags.RATING_AND_LANGUAGE_ROW.name)
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Row(

@@ -26,7 +26,7 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class MainActivitySuccessStatesTest {
+class MainActivityUITests {
 
     @get:Rule(order = 1)
     var hiltRule = HiltAndroidRule(this)

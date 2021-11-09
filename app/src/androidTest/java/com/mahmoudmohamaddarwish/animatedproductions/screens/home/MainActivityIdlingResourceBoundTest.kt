@@ -7,7 +7,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.FavoritesListUseCase
 import com.mahmoudmohamaddarwish.animatedproductions.repo.FavoritesRepoTest.Companion.addDummyFavorites
-import com.mahmoudmohamaddarwish.animatedproductions.screens.details.DETAILS_ROOT_COMPOSABLE_TEST_TAG
+import com.mahmoudmohamaddarwish.animatedproductions.screens.details.DetailsActivityTestTags
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -152,7 +152,7 @@ class MainActivityIdlingResourceBoundTest {
         // wait for details screen to fully load
         waitForIdleState()
 
-        return onNodeWithTag(DETAILS_ROOT_COMPOSABLE_TEST_TAG).assertIsDisplayed()
+        return onNodeWithTag(DetailsActivityTestTags.ROOT_COMPOSABLE.name).assertIsDisplayed()
     }
 
     /**

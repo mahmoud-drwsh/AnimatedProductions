@@ -39,28 +39,28 @@ class DetailsActivitySuccessStatesTest {
     @Test
     fun app_displays_backdrop_image() {
         composeTestRule.run {
-            onNodeWithTag(DETAILS_BACKDROP_IMAGE_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(DetailsActivityTestTags.BACKDROP_IMAGE.name).assertIsDisplayed()
         }
     }
 
     @Test
     fun app_displays_poster_image() {
         composeTestRule.run {
-            onNodeWithTag(DETAILS_POSTER_IMAGE_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(DetailsActivityTestTags.POSTER_IMAGE.name).assertIsDisplayed()
         }
     }
 
     @Test
     fun app_displays_title_text() {
         composeTestRule.run {
-            onNodeWithTag(DETAILS_TITLE_TEXT_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(DetailsActivityTestTags.TITLE_TEXT.name).assertIsDisplayed()
         }
     }
 
     @Test
     fun app_displays_overview_text() {
         composeTestRule.run {
-            onNodeWithTag(DETAILS_OVERVIEW_TEXT_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(DetailsActivityTestTags.OVERVIEW_TEXT.name).assertIsDisplayed()
         }
     }
 }

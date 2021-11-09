@@ -33,7 +33,7 @@ class DetailsActivityLoadingStatesTest {
     @Test
     fun app_displays_loading_indicator() {
         composeTestRule.run {
-            onNodeWithTag(DETAILS_LOADING_INDICATOR_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(DetailsActivityTestTags.LOADING_INDICATOR.name).assertIsDisplayed()
         }
     }
 }
