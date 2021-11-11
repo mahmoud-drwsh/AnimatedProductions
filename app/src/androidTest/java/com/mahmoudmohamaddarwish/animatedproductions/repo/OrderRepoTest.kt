@@ -31,14 +31,6 @@ class OrderRepoTest {
         hiltRule.inject()
     }
 
-    // these objects will be used to test that the dataStore is working correctly
-    private val orderObjects = listOf(
-        Order(Order.Property.RELEASE_DATE, Order.Type.DESCENDING),
-        Order(Order.Property.RELEASE_DATE, Order.Type.ASCENDING),
-        Order(Order.Property.Name, Order.Type.ASCENDING),
-        Order(Order.Property.Name, Order.Type.DESCENDING),
-    )
-
 
     @Test
     fun ensureOrderObjectsAreCorrectlySavedAndRetrieved() {
@@ -61,5 +53,15 @@ class OrderRepoTest {
                 "Expected: $order, found: $first"
             }
         }
+    }
+
+    companion object {
+        // these objects will be used to test that the dataStore is working correctly
+        val orderObjects = listOf(
+            Order(Order.Property.RELEASE_DATE, Order.Type.DESCENDING),
+            Order(Order.Property.RELEASE_DATE, Order.Type.ASCENDING),
+            Order(Order.Property.Name, Order.Type.ASCENDING),
+            Order(Order.Property.Name, Order.Type.DESCENDING),
+        )
     }
 }

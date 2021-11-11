@@ -2,7 +2,6 @@ package com.mahmoudmohamaddarwish.animatedproductions.repo
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.Service
-import com.mahmoudmohamaddarwish.animatedproductions.data.tmdb.api.getPosterImageUrl
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi

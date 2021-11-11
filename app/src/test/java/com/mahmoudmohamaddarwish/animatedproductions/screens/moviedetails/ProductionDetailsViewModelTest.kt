@@ -8,6 +8,9 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 
+/**
+ * Since this one doesn't depend on Hilt, it was placed under the test directory
+ * */
 class ProductionDetailsViewModelTest {
 
     private lateinit var productionDetailsViewModel: ProductionDetailsViewModel

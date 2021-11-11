@@ -9,6 +9,8 @@ import com.mahmoudmohamaddarwish.animatedproductions.screens.moviedetails.DETAIL
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -63,8 +65,12 @@ class MainActivitySuccessStatesTest {
         composeTestRule.run {
             registerIdlingResource(HomeIdlingResource)
 
+            // to ensure the the data loaded has been shown
+            waitForIdleExtra()
+
             // click on the movies tab to show the movies list
             onNodeWithTag(MAIN_ACTIVITY_MOVIES_TAB_TEST_TAG).performClick()
+
 
             onNodeWithTag(MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG).assertIsDisplayed()
         }
@@ -75,8 +81,12 @@ class MainActivitySuccessStatesTest {
         composeTestRule.run {
             registerIdlingResource(HomeIdlingResource)
 
+            // to ensure the the data loaded has been shown
+            waitForIdleExtra()
+
             // click on the Shows tab to show the TV shows list
             onNodeWithTag(MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG).performClick()
+
 
             onNodeWithTag(MAIN_ACTIVITY_SHOWS_LIST_TEST_TAG).assertIsDisplayed()
         }
@@ -87,16 +97,23 @@ class MainActivitySuccessStatesTest {
         composeTestRule.run {
             registerIdlingResource(HomeIdlingResource)
 
+            // to ensure the the data loaded has been shown
+            waitForIdleExtra()
+
             // click on the shows tab
             onNodeWithTag(MAIN_ACTIVITY_SHOWS_TAB_TEST_TAG).performClick()
 
+
             // ensure the list of shows is shown
             onNodeWithTag(MAIN_ACTIVITY_SHOWS_LIST_TEST_TAG).assertIsDisplayed()
+
+            waitForIdleExtra()
 
             // click on the first show in the list
             onAllNodesWithTag(MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG)
                 .onFirst()
                 .performClick()
+
 
             // ensure the details screen is displayed
             onNodeWithTag(DETAILS_ROOT_COMPOSABLE_TEST_TAG).assertIsDisplayed()
@@ -108,15 +125,22 @@ class MainActivitySuccessStatesTest {
         composeTestRule.run {
             registerIdlingResource(HomeIdlingResource)
 
+            // to ensure the the data loaded has been shown
+            waitForIdleExtra()
+
             onNodeWithTag(MAIN_ACTIVITY_MOVIES_TAB_TEST_TAG).performClick()
+
 
             // ensure the list of movies is shown
             onNodeWithTag(MAIN_ACTIVITY_MOVIES_LIST_TEST_TAG).assertIsDisplayed()
+
+            waitForIdleExtra()
 
             // click on the first movie in the list
             onAllNodesWithTag(MAIN_ACTIVITY_POSTER_IMAGE_TEST_TAG)
                 .onFirst()
                 .performClick()
+
 
             // ensure the details screen is displayed
             onNodeWithTag(DETAILS_ROOT_COMPOSABLE_TEST_TAG).assertIsDisplayed()
@@ -141,8 +165,11 @@ class MainActivitySuccessStatesTest {
 
             sortingIconButton.assertIsDisplayed()
 
+            waitForIdleExtra()
+
             // show the options
             sortingIconButton.performClick()
+
 
 
             onNodeWithText(Order.Property.Name.label).assertIsDisplayed()
@@ -152,5 +179,18 @@ class MainActivitySuccessStatesTest {
         }
     }
 
+    /**
+     * To make sure that the screen really is in idle state.
+     *
+     * In some instances, despite the screen loading successfully, the tests fail without waiting
+     * for extra time
+     * */
+    fun waitForIdleExtra() = runBlocking {
+        delay(IDLE_WAITING_TIME)
+    }
+
+    companion object {
+        private const val IDLE_WAITING_TIME = 500L
+    }
 }
 

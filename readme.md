@@ -1,6 +1,8 @@
-Since Compose is used in this project, the way testing is done differs completely from the way Views are tested, so when testing a Composable function, test tags are used in place of View ID's, and those test tags are kept in Kotlin files to help with organizing the code in a way that is manageable. The Home screen (MainActivity) has in its subpackage, a file named MainActivityTestTags that in it, all the test tags that are for the Home screen are placed. As for the other screens, for each there is a file for keeping its test tags in and it is found in its subpackage.
+Since Hilt and Compose are used in this project, the way testing is done differs completely from the way Views are tested, so when testing a Composable function, test tags are used in place of View ID's, and those test tags are kept in Kotlin files to help with organizing the code in a way that is manageable. The Home screen (MainActivity) has in its subpackage, a file named MainActivityTestTags that in it, all the test tags that are for the Home screen are placed. As for the other screens, for each there is a file for keeping its test tags in and it is found in its subpackage.
 
 One more thing to keep in mind is that since Flows are used for asynchronous data fetching, the tests differ in that regard as well. And since Hilt is used for dependency injection, most tests had to be written in the androidTest folder since Hilt depends on the Android framework.
+
+I have placed just one test for a ViewModel under the tests directory, but the other one, due to it depending on Hilt, I had to place it under the androidTest directory since it needed access to the Android framework. 
 
 Please refer to this page for a detailed description of how testing is done with Compose: https://developer.android.com/jetpack/compose/testing
 
