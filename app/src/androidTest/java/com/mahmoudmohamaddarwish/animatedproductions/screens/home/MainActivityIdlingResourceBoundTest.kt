@@ -1,5 +1,6 @@
 package com.mahmoudmohamaddarwish.animatedproductions.screens.home
 
+import androidx.activity.viewModels
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -8,6 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mahmoudmohamaddarwish.animatedproductions.domain.usecase.FavoritesListUseCase
 import com.mahmoudmohamaddarwish.animatedproductions.repo.FavoritesRepoTest.Companion.addDummyFavorites
 import com.mahmoudmohamaddarwish.animatedproductions.screens.details.DetailsActivityTestTags
+import com.mahmoudmohamaddarwish.animatedproductions.screens.shared_viewmodels.NightModeViewModel
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -168,3 +170,50 @@ class MainActivityIdlingResourceBoundTest {
     }
 }
 
+
+@ExperimentalCoroutinesApi
+@OptIn(FlowPreview::class)
+@RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
+class NightModeViewModelTest {
+
+
+    @get:Rule(order = 1)
+    var hiltRule = HiltAndroidRule(this)
+
+
+    @get:Rule(order = 2)
+    var composeTestRule = createAndroidComposeRule<MainActivity>()
+
+
+    private lateinit var nightModeViewModel: NightModeViewModel
+
+
+    @Before
+    fun setup() {
+        hiltRule.inject()
+
+        val vm by composeTestRule.activity.viewModels<NightModeViewModel>()
+        nightModeViewModel = vm
+    }
+
+    @Test
+    fun appSuccessfullyLoadsMovies(): Unit = runBlocking {
+
+    }
+
+    /**
+     * Using this ensures that everything has completely loaded after the idlingResource signals
+     * that it has loaded.
+     * */
+    private fun waitForIdleState(l: Long = timeToWaitFor) {
+        runBlocking { delay(l) }
+    }
+
+    companion object {
+        private const val timeToWaitFor = 1000L
+    }
+}
+
+
+private const val TAG = "MainActivityIdlingResou"
