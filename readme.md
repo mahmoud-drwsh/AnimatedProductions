@@ -6,6 +6,8 @@ Please refer to this page for a detailed description of how testing is done with
 
 I have applied the concept of an IdlingResource object in this project, but due to problems with one of the Compose testing framework libraries, the implementation of the IdlingResource interface for Compose was possible to be written only in the androidTest folder. So, the IdlingResource interface is implemented in the androidTest folder, and it depends on an object in the main folder to determine whether the screen is idle or not at a given moment. The problem with that library is that whenever it's added as an implementation dependency rather than an androidTestImplementation one, the app wouldn't compile since it seems it has a bug that has not been removed yet.
 
+For this project, I used the new Material You (Material 3) library for the UI of the app.
+
 --------------------------------------------------
 
 The following libraries were used in the writing of the animatedProductionsApp:
@@ -19,7 +21,8 @@ The following libraries were used in the writing of the animatedProductionsApp:
 8. Jetpack DataStore.
 9. Jetpack Room.
 10. Jetpack SplashScreen.
-11. And more.
+11. Google's Material You (material3)
+12. And more.
 
 --------------------------------------------------
 

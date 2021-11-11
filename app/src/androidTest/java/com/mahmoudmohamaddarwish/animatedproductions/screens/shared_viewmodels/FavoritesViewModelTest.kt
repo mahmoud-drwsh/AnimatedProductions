@@ -138,6 +138,7 @@ class FavoritesViewModelTest {
      *  setContent method
      * */
     private fun instantiateViewModel() {
+        // this is the only way that I have found to instantiate obtain an instance of the viewModel
         composeTestRule.setContent { favoritesViewModel = viewModel() }
     }
 
