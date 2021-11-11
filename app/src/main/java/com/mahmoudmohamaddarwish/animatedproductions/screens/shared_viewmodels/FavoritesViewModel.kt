@@ -34,6 +34,10 @@ class FavoritesViewModel @Inject constructor(
         favoritesListUseCase.removeFavorite(production)
     }
 
+    /**
+     * if the production passed with the boolean value true for isProductionAFavorite, then it will
+     * be removed from the list of favorites, else, it will be added to it.
+     * */
     fun toggleFavoriteStatus(production: Production, isProductionAFavorite: Boolean) =
         coroutineScope.launch {
             if (isProductionAFavorite) removeFavorite(production) else addFavorite(production)
